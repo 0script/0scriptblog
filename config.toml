@@ -1,15 +1,15 @@
 baseurl = "/"
-title = "My blog"
+title = "HOME : 0script"
 theme = "ghostwriter"
 
 [Params]
     mainSections = ["post"]
     intro = true
-    headline = "My headline"
-    description = "My description"
-    github = "https://github.com/XXX"
+    headline = "Welcome to 0script blog."
+    description = "All about programming ."
+    github = "https://github.com/0script"
     twitter = "https://twitter.com/XXX"
-    email = "XXX@example.com"
+    email = "z5r00script@example.com"
     opengraph = true
     shareTwitter = true
     dateFormat = "Mon, Jan 2, 2006"
