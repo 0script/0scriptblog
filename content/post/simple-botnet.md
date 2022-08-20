@@ -188,7 +188,7 @@ Now it's time to execute :
   
 ### execution 
 To start I copy bootserver.py and commands.txt in my kali machine and then I copy the client file in my machines which will serve as bot:  
-```shell
+```shell  
 $echo "ls -a\npwd\nwho\nuname -a\n" > commands.txt
 $rsync commands.txt kali@192.168.100.152:/home/kali/hacks/simple-botnet
 $rsync botserver.py kali@192.168.100.152:/home/kali/hacks/simple-botnet
