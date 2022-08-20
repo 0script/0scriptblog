@@ -101,7 +101,7 @@ A single template is used to render a single piece of content. For example, an a
 #### List Template
 
 A list template renders a group of related content. That could be a summary of recent postings or all articles in a category. List templates can contain multiple groups.
-
+  
 The homepage template is a special type of list template. Hugo assumes that the home page of your site will act as the portal for the rest of the content in the site.
 
 #### Partial Template
