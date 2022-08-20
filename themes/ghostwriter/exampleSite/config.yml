@@ -5,7 +5,7 @@ languageCode: en-us
 copyright: My Name
 disqusShortname: XXX
 googleAnalytics: XXX
-pygmentsUseClasses: true
+pygmentsUseClasses: false
 pygmentsCodefences: true
 
 markup:
@@ -17,7 +17,8 @@ markup:
     lineNos: false
     lineNumbersInTable: true
     noClasses: true
-    tabWidth: 2
+    tabWidth: 2 
+    style: "dracula"
 
 privacy:
   disqus:
