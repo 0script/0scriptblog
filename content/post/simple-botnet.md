@@ -196,7 +196,7 @@ $rsync botclient.py oraclevm@192.168.100.186:/home/oraclevm/oracleuser/simple-bo
 $rsync botclient.py ubuntu22@192.168.100.217:/home/ubuntu22/Desktop/ubuntu22
 ```  
 I can now launch the server in my kali machine  
-```shell
+```
 $python3 botserver.py
 ```  
 
