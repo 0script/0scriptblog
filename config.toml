@@ -1,18 +1,20 @@
 baseurl = "/"
-title = "HOME : 0script"
+title = "Blog : 0script"
 theme = "ghostwriter"
 
 [Params]
     mainSections = ["post"]
     intro = true
-    headline = "Welcome to 0script blog."
-    description = "My journey into computer  articles in french and english."
+    headline = "Deep dive into computer science with 0script"
+    description = "Hello Friend , this is 0script blog to help you in your tech journey . Here are my articles by publication date."
     github = "https://github.com/0script"
     twitter = "https://twitter.com/XXX"
+    linkedin = "https://www.linkedin.com/in/marcel-levy-nkoghe-obame-4479091a6/"
     email = "z5r00script@example.com"
     opengraph = true
     shareTwitter = true
     dateFormat = "Mon, Jan 2, 2006"
+    name = "0scriptblog"
 
 [Permalinks]
     post = "/:filename/"
