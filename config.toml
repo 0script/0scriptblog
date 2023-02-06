@@ -18,3 +18,17 @@ theme = "ghostwriter"
 
 [Permalinks]
     post = "/:filename/"
+
+[menu]
+[[menu.main]]
+  identifier = 'contact'
+  name = 'contact us'
+  url = '/contact/'
+[[menu.main]]
+  identifier = 'home'
+  name = 'home'
+  url = '/'
+[[menu.main]]
+  identifier = 'about'
+  name = 'about 0script'
+  url = '/about-me/'
