@@ -205,7 +205,7 @@ Then I run botclient.py with sleep, time for me to quickly switch tabs so that t
     ![running botclient in ubuntu](https://preview.redd.it/t6pkoylg6ti91.png?width=739&format=png&auto=webp&s=ce4dfb1d8bb0bacde9a6435e7f8b4093a7ce2e78 "ubuntu22")  
 
 output on the kali machine : CnC server  
-    ![](https://photos.google.com/u/0/album/AF1QipNo0tehJ25EAy3xFGUPTP9pV7FsgDJb6dASpWgu/photo/AF1QipM_Pbd1uJKUzw9Yk39L4Uex8rQc9NIqys7owgJv "kali machine running the server")
+
     ![kali machine CnC server](https://i.redd.it/8edhl0qbsqi91.png "kali")  
 ## Conclusion  
 Although this is a serious security thread, a botnet may not be very easy to implement, it is important for anyone involved in the development and maintenance of an information system to understand their working to identify and secure ways an attacker could use to implement a malicious botnet on their system .    
