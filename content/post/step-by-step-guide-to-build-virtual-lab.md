@@ -76,4 +76,40 @@ Linux based operating system supports all the mainstream hypervisor like [Virtua
 5. As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
 
 # Installation of VyOs router 
-Use this [link](https://vyos.io/subscriptions/software) to download the router setup , take the free version .
+Use this [link](https://vyos.io/subscriptions/software) to download the router iso file , take the free version .
+
+1. We will use the libvirt default network interface but first we need to activate it 
+    1. check for libvirt network interface : `sudo virsh net-list --all`
+    ```shell
+    $sudo virsh net-list --all
+    Name      State      Autostart   Persistent
+    ----------------------------------------------
+    default   inactive   no          yes
+    private   inactive   no          yes # ignore this line 
+    ```
+    * If this command do not show you any interface you can load the libvirt default network interface with the followint :
+    ```shell
+    $sudo sudo virsh net-define /usr/share/libvirt/networks/default.xml
+    ```
+    * You should see a message confirming the creation of the interface .
+    
+    2. Activate the interface  using `sudo virsh net-start default`
+    ```shell
+        $sudo virsh net-start default 
+            Network default started
+    ```
+
+2. Open virt-manager select create new virtual machine 
+
+    ![Alt text](~/Desktop/z/imgsblog/cvm1.png  "Create new virtual machine")
+
+    * click forward to proceed 
+
+    insert image imgsblog/cvyos2.png
+
+    * select the operating system iso file 
+
+     insert image imgsblog/cvyos2.png
+
+     
+3. 
