@@ -1,9 +1,10 @@
 ---
-title: "Step by Step Guide to Build Virtual Lab"
+title: "Step by Step Guide to Build Virtual Lab In Linux With Kvm"
 date: 2023-02-10T14:19:56+02:00
 draft: false
 ---
 
+![Virtual Lab](https://benisnous.com/wp-content/uploads/2021/03/how-to-build-a-HACKING-lab-to-become-a-hacker.jpg)
 # Content 
 * Overview
 * What you'll need 
@@ -19,7 +20,7 @@ In this article I will show you how to create your own virtual lab under a linux
 * A computer with enough power  at least i3 not older than 2015 a minimum of 8gb or ram a swap memory(virtual ram) will be plus . As you can my set up
 consist of AMD Ryzen 7 cpu with 16GB of RAM and 22GB of swap memory so I'm good to proceed 
 
-![Tux, the Linux mascot](https://i.redd.it/nzsn80mofzha1.png)
+![My Computer Specs](https://i.redd.it/nzsn80mofzha1.png)
 * A computer with a linux distribution (Debian based prefered)
 * A basic understanding of the linux shell
 * How to use text editor like vim or nano
@@ -99,17 +100,23 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
             Network default started
     ```
 
-2. Open virt-manager select create new virtual machine 
+2. On your computer search for the virt manager and run it  
 
-    ![Alt text](~/Desktop/z/imgsblog/cvm1.png  "Create new virtual machine")
+    ![Openning virtual manager](https://lh3.googleusercontent.com/pw/AMWts8DHnkaqoGpkbwS4IGhE3-KF0tLLG1yBYwz6gXtW6G2CtpQ83s00nIXawvOZHrcDOmeIUCC28ImoNI7CjMOKs84z03QgFewmLqxdY8dDcd9MAlfkEDCKr44d85JVZ3tjQtMmKtnn2nko_RLXSyp8_b9V=w592-h356-no?authuser=0)
 
-    * click forward to proceed 
+    * Select create a new virtual machine on the top left button
+    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8CiQ1RZXdSwlD-ZKFK7NnKl9NDg4g4A_Uq8mTg2VURi-h3_R2KaeQVqNlBHg8JELR_PzkcVWfiKCiHYC-1JkTDYj8MM9VOpZjLZKuJqompm1SU3t7D8aHzNlCKyP7uv7gbaeEEbwbr3CTJYZ6FEDGnj=w550-h580-no?authuser=0)
 
-    insert image imgsblog/cvyos2.png
+    * Click forward to select the operating system iso file 
+    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8BUCkNDYePon0aKuK-rFyf-W5lu-r2tOPuk3POEdDS-ZjLxxUu_1nuHz2tt8yrCNBCfOm_7kJsCBZCUMsTTlPeiPke26gRmWhA7pvTsu7T0KHMCNkq3_IUCXfdIh-06e-i2Bo74GRVUHfIiRHN7t800=w500-h530-no?authuser=0)
 
-    * select the operating system iso file 
+    * next select browse 
+    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8Ah37IAgAkVVANoApKBu0Zd2H1us9b61nTnycSaL8O6SMCHpAbJaten3VHh3ikoP4n3A2SsG7TzmmkqUuhQHAJzLunNuxNshF02_flpXF0M8GDd7gdDXax-iqpVa0nbXfEBK6A4aJoL-cl1xyHQOLzE=w500-h530-no?authuser=0)
 
-     insert image imgsblog/cvyos2.png
+    * click browse local to access your computer file 
+    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8DHYP6PxDL53ogppE1u9h6223pnwPBdjNH7DcH40vyOY-md4pzwhv3jllurP5ToBE73h5TpGOVj2YneK55Vs9vXkYOylLs8j35XxUlP7h4nSV0JgLuDf8vHhNgtmnkKMzQfuwxlmfQKNwni4xGquR-g=w760-h550-no?authuser=0)
 
-     
-3. 
+    * Go to the directory that contain vyos image that you downloaded and select it 
+    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8BWJdyCZb0z92mUF0aOFO5aD6KZtdoQor5T68SJBf-1VMos3LZDjWscmLjonRWCls9mjFXugGf4_z6vAnaOYfNWH4sfjegyIbAb7tqoluLdDAu6BXwqtaS9vDsV6PnBM1lWoLgkUNJ4x6WImC5C7y5o=w840-h664-no?authuser=0)
+
+3.  
