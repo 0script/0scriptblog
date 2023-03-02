@@ -119,4 +119,40 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     * Go to the directory that contain vyos image that you downloaded and select it 
     ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8BWJdyCZb0z92mUF0aOFO5aD6KZtdoQor5T68SJBf-1VMos3LZDjWscmLjonRWCls9mjFXugGf4_z6vAnaOYfNWH4sfjegyIbAb7tqoluLdDAu6BXwqtaS9vDsV6PnBM1lWoLgkUNJ4x6WImC5C7y5o=w840-h664-no?authuser=0)
 
+    * Once the image selecter , uncheck the automatic selection of os and enter Generic Os once done , it should look like this  
+    ![Create New Virtual Machine](insert image)
+
+    * Setting up the virtual cpu and ram everything above 2 cpu and 1gb of ram should be enough for us  
+    ![Create New Virtual Machine](insert image)
+
+    * Set the size of the virtual hard disk i put 8gb 
+    ![Create New Virtual Machine](insert image)
+   
+   * Name the machine and add virtual network interface than install the image 
+    ![Create New Virtual Machine](insert image)
+
+    * Press Enter to run live mode 
+    ![Create New Virtual Machine](insert image)    
+
+    * The default user "vyos" and password  "vyos"  
+    ![Create New Virtual Machine](insert image)    
+
+    * as we are still in live mode we need to use the command `install image` to make a definitive installation  
+    ![Create New Virtual Machine](insert image)    
+
+    * we need to follow the installation wizard , pressing <Enter> is equivalent to Yes
+    ![Create New Virtual Machine](insert image)    
+
+    * To set up the partition just press enter to chose the default option
+
+    * Just press enter to select the disk 
+
+    * Than the default option is set to No so we need an explicit yes 
+
+    * We can press enter for the next step 
+
+    * I chose "vyos" as username and password so i'll not need to remember it
+
+    * press enter then on the shell enter the command `reboot` to restart the system and make the change effective .
+
 3.  
