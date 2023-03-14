@@ -76,6 +76,9 @@ Linux based operating system supports all the mainstream hypervisor like [Virtua
 
 5. As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
 
+# Setting up virtual network interface 
+In our network we will have to network interfaces : 
+
 # Installation of VyOs router 
 Use this [link](https://vyos.io/subscriptions/software) to download the router iso file , take the free version .
 
@@ -86,7 +89,6 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     Name      State      Autostart   Persistent
     ----------------------------------------------
     default   inactive   no          yes
-    private   inactive   no          yes # ignore this line 
     ```
     * If this command do not show you any interface you can load the libvirt default network interface with the followint :
     ```shell
@@ -94,65 +96,120 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     ```
     * You should see a message confirming the creation of the interface .
     
+    2. Create additional virtual interface for private network , this is the network that will be used to contain our virtual laboratory :
+        1.  Copy and paste the following in a file named `private.xml` :
+        ```xml
+            <network>
+                <name>private</name>
+                <bridge name="virbr1" />
+                <ip address="192.168.152.1" netmask="255.255.255.0">
+                    <dhcp>
+                    <range start="192.168.152.2" end="192.168.152.254" />
+                    </dhcp>
+                </ip>
+                <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
+            </network>
+        ```
+        * this file help us to define the attribute of a virtual network interface , refers to the [documentation](https://libvirt.org/formatdomain.html) for more understanding  
+
     2. Activate the interface  using `sudo virsh net-start default`
     ```shell
-        $sudo virsh net-start default 
-            Network default started
+    $sudo virsh net-start default 
+        Network default started
     ```
 
-2. On your computer search for the virt manager and run it  
+2. After setting the virtual network we can install the vyos router ,on 
+    your computer search for the virt manager application and run it   
 
-    ![Openning virtual manager](https://lh3.googleusercontent.com/pw/AMWts8DHnkaqoGpkbwS4IGhE3-KF0tLLG1yBYwz6gXtW6G2CtpQ83s00nIXawvOZHrcDOmeIUCC28ImoNI7CjMOKs84z03QgFewmLqxdY8dDcd9MAlfkEDCKr44d85JVZ3tjQtMmKtnn2nko_RLXSyp8_b9V=w592-h356-no?authuser=0)
+    ![Openning virtual manager](https://i.postimg.cc/7Zb2cBgj/0001.png)
 
     * Select create a new virtual machine on the top left button
-    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8CiQ1RZXdSwlD-ZKFK7NnKl9NDg4g4A_Uq8mTg2VURi-h3_R2KaeQVqNlBHg8JELR_PzkcVWfiKCiHYC-1JkTDYj8MM9VOpZjLZKuJqompm1SU3t7D8aHzNlCKyP7uv7gbaeEEbwbr3CTJYZ6FEDGnj=w550-h580-no?authuser=0)
+    [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-    * Click forward to select the operating system iso file 
-    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8BUCkNDYePon0aKuK-rFyf-W5lu-r2tOPuk3POEdDS-ZjLxxUu_1nuHz2tt8yrCNBCfOm_7kJsCBZCUMsTTlPeiPke26gRmWhA7pvTsu7T0KHMCNkq3_IUCXfdIh-06e-i2Bo74GRVUHfIiRHN7t800=w500-h530-no?authuser=0)
+    * Click forward as the media of installation for vyos is an iso file 
+    ![Create New Virtual Machine](https://i.postimg.cc/8Pv5rqmp/0002.png)
 
-    * next select browse 
-    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8Ah37IAgAkVVANoApKBu0Zd2H1us9b61nTnycSaL8O6SMCHpAbJaten3VHh3ikoP4n3A2SsG7TzmmkqUuhQHAJzLunNuxNshF02_flpXF0M8GDd7gdDXax-iqpVa0nbXfEBK6A4aJoL-cl1xyHQOLzE=w500-h530-no?authuser=0)
+    * select browse access the installation media   
+    [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
-    * click browse local to access your computer file 
-    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8DHYP6PxDL53ogppE1u9h6223pnwPBdjNH7DcH40vyOY-md4pzwhv3jllurP5ToBE73h5TpGOVj2YneK55Vs9vXkYOylLs8j35XxUlP7h4nSV0JgLuDf8vHhNgtmnkKMzQfuwxlmfQKNwni4xGquR-g=w760-h550-no?authuser=0)
+    * Click the button `Browse Local` to access file on your local machine 
+    * Go to the folder containing the iso file for vyos that you [download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
+    [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
-    * Go to the directory that contain vyos image that you downloaded and select it 
-    ![Create New Virtual Machine](https://lh3.googleusercontent.com/pw/AMWts8BWJdyCZb0z92mUF0aOFO5aD6KZtdoQor5T68SJBf-1VMos3LZDjWscmLjonRWCls9mjFXugGf4_z6vAnaOYfNWH4sfjegyIbAb7tqoluLdDAu6BXwqtaS9vDsV6PnBM1lWoLgkUNJ4x6WImC5C7y5o=w840-h664-no?authuser=0)
+    [![browse.png](https://i.postimg.cc/TPgx5WCS/browse.png)](https://postimg.cc/qtJS9gfX)
 
-    * Once the image selecter , uncheck the automatic selection of os and enter Generic Os once done , it should look like this  
-    ![Create New Virtual Machine](insert image)
+    * Once the image selecter , uncheck the automatic selection of os and enter Generic Os in the search bar  once done , it should look like this  , then i click forward to proceed 
+    [![01.png](https://i.postimg.cc/V6D02N27/01.png)](https://postimg.cc/hzQGdKDx)
 
-    * Setting up the virtual cpu and ram everything above 2 cpu and 1gb of ram should be enough for us  
-    ![Create New Virtual Machine](insert image)
+    * Now we are setting the virtual cpu and ram for or use case 2 cpu and 1gb of ram should be enough  and just after for the virtual hard drive I put 8gb 
+    [![02.png](https://i.postimg.cc/XvG651kQ/02.png)](https://postimg.cc/HJgND2Ky)
 
-    * Set the size of the virtual hard disk i put 8gb 
-    ![Create New Virtual Machine](insert image)
+    [![03.png](https://i.postimg.cc/597BjPjX/03.png)](https://postimg.cc/Z0NBMx8m)
    
-   * Name the machine and add virtual network interface than install the image 
-    ![Create New Virtual Machine](insert image)
+   * Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking) 
+    [![04.png](https://i.postimg.cc/NG5bcyxq/04.png)](https://postimg.cc/qgH2cvYj)
 
-    * Press Enter to run live mode 
-    ![Create New Virtual Machine](insert image)    
+    * Once the installation is finished on the vyos machine press enter to run live mode 
+    [![04.png](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/7vyos.jpg)](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/)
 
-    * The default user "vyos" and password  "vyos"  
-    ![Create New Virtual Machine](insert image)    
 
-    * as we are still in live mode we need to use the command `install image` to make a definitive installation  
-    ![Create New Virtual Machine](insert image)    
+    * Use default user "vyos" and password  "vyos" to log in   
+    [![07.png](https://i.postimg.cc/zXbYQXQ0/07.png)](https://postimg.cc/8jSYJDN6)
 
-    * we need to follow the installation wizard , pressing <Enter> is equivalent to Yes
-    ![Create New Virtual Machine](insert image)    
+    * To complete the installation you need to run the commande `install image` on the shell using the installation wizard
+    ```shell
+    vyos@vyos:~$ install image
+    Welcome to the VyOS install program.  This script
+    will walk you through the process of installing the
+    VyOS image to a local hard drive.
+    Would you like to continue? (Yes/No) [Yes]: Yes  # Pressing Enter i.e to Yes
+    Probing drives: OK
+    Looking for pre-existing RAID groups...none found.
+    The VyOS image will require a minimum 2000MB root.
+    Would you like me to try to partition a drive automatically
+    or would you rather partition it manually with parted?  If
+    you have already setup your partitions, you may skip this step
 
-    * To set up the partition just press enter to chose the default option
+    Partition (Auto/Parted/Skip) [Auto]:    # Press Enter i.e to the default option here [Auto]
 
-    * Just press enter to select the disk 
+    I found the following drives on your system:
+    sda    4294MB
 
-    * Than the default option is set to No so we need an explicit yes 
+    Install the image on? [sda]:    # Press Enter to select default option
 
-    * We can press enter for the next step 
+    This will destroy all data on /dev/sda.
+    Continue? (Yes/No) [No]: Yes    # The instalation has started
 
-    * I chose "vyos" as username and password so i'll not need to remember it
+    How big of a root partition should I create? (2000MB - 4294MB) [4294]MB: # Press Enter to select default option
 
-    * press enter then on the shell enter the command `reboot` to restart the system and make the change effective .
+    Creating filesystem on /dev/sda1: OK
+    Done!
+    Mounting /dev/sda1...
+    What would you like to name this image? [1.2.0-rolling+201809210337]:
+    OK.  This image will be named: 1.2.0-rolling+201809210337
+    Copying squashfs image...
+    Copying kernel and initrd images...
+    Done!
+    I found the following configuration files:
+        /opt/vyatta/etc/config.boot.default
+    Which one should I copy to sda? [/opt/vyatta/etc/config.boot.default]:  # Press Enter or Yes to select default option
 
-3.  
+    Copying /opt/vyatta/etc/config.boot.default to sda.
+    Enter password for administrator account
+    Enter password for user 'vyos':
+    Retype password for user 'vyos':
+    I need to install the GRUB boot loader.
+    I found the following drives on your system:
+    sda    4294MB
+
+    Which drive should GRUB modify the boot partition on? [sda]:    # Press Enter or Yes to select default option
+
+    Setting up grub: OK
+    Done!
+    ```
+
+    * We need to restart the machine with the command `reboot` in order to make the change effective :
+    ```shell
+    vyos@vyos:~$ reboot
+    Proceed with reboot? (Yes/No) [No] Yes
+    ```
