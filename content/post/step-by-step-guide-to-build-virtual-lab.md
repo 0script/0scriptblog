@@ -137,97 +137,13 @@ $sudo virsh net-list
 --------------------------------------------
  default   active   no          yes
  private   active   no          no
-
-
 ```
 
 # Installation of VyOs router
 
 Use this [link](https://vyos.io/subscriptions/software) to download the router iso file , take the free version .
-1. check for libvirt network interface : `sudo virsh net-list --all`
-    ```shell
-    $sudo virsh net-list --all
-    Name      State      Autostart   Persistent
-    ----------------------------------------------
-    default   inactive   no          yes
-    ```
-    * If this command do not show you any interface you can load the libvirt default network interface with the followint :
-    ```shell
-    $sudo sudo virsh net-define /usr/share/libvirt/networks/default.xml
-    ```
-    You should see a message confirming the creation of the interface .
-    
-    * Activate the interface  using `sudo virsh net-start default`
-    ```shell
-    $sudo virsh net-start default 
-        Network default started
-    ```
-    
 
-2. To create the private interface we create a file named `private.xml` and open it in a text editor and put the following inside :
-    ```xml
-        <network>
-            <name>private</name>
-            <bridge name="virbr1" />
-            <ip address="192.168.152.1" netmask="255.255.255.0">
-                <dhcp>
-                    <range start="192.168.152.2" end="192.168.152.254" />
-                </dhcp>
-            </ip>
-            <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
-        </network>
-    ```
-    The xml format is used to describe virtual network interface :
-    * name : interface name
-    * bridge : bridge name
-    * ip : define ip
-    * dhcp : setting dhcp for the interface
-
-    Save the file then open a terminal in the directory where the xml file is and run `virsh net-create private.xml` to     2:
-    ```shell
-    $sudo virsh net-create private.xml 
-    [sudo] password for 0script:
-    Network private created from private.xml
-    ``` 
-
-
-1. We will use the libvirt default network interface but first we need to activate it 
-    1. check for libvirt network interface : `sudo virsh net-list --all`
-    ```shell
-    $sudo virsh net-list --all
-    Name      State      Autostart   Persistent
-    ----------------------------------------------
-    default   inactive   no          yes
-    ```
-    * If this command do not show you any interface you can load the libvirt default network interface with the followint :
-    ```shell
-    $sudo sudo virsh net-define /usr/share/libvirt/networks/default.xml
-    ```
-    * You should see a message confirming the creation of the interface .
-    
-    2. Create additional virtual interface for private network , this is the network that will be used to contain our virtual laboratory :
-        1.  Copy and paste the following in a file named `private.xml` :
-        ```xml
-            <network>
-                <name>private</name>
-                <bridge name="virbr1" />
-                <ip address="192.168.152.1" netmask="255.255.255.0">
-                    <dhcp>
-                    <range start="192.168.152.2" end="192.168.152.254" />
-                    </dhcp>
-                </ip>
-                <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
-            </network>
-        ```
-        * this file help us to define the attribute of a virtual network interface , refers to the [documentation](https://libvirt.org/formatdomain.html) for more understanding  
-
-    2. Activate the interface  using `sudo virsh net-start default`
-    ```shell
-    $sudo virsh net-start default 
-        Network default started
-    ```
-
-2. After setting the virtual network we can install the vyos router ,on 
+* Once the iso file downloaded we can start the installation  the vyos router ,on 
     your computer search for the virt manager application and run it   
 
     ![Openning virtual manager](https://i.postimg.cc/7Zb2cBgj/0001.png)
@@ -304,7 +220,7 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     Which one should I copy to sda? [/opt/vyatta/etc/config.boot.default]:  # Press Enter or Yes to select default option
 
     Copying /opt/vyatta/etc/config.boot.default to sda.
-    Enter password for administrator account
+    Enter password for administrator account  # setting up new  password
     Enter password for user 'vyos':
     Retype password for user 'vyos':
     I need to install the GRUB boot loader.
@@ -322,3 +238,37 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     vyos@vyos:~$ reboot
     Proceed with reboot? (Yes/No) [No] Yes
     ```
+
+## Setting up VyOs
+
+### Adding private network interface 
+
+On the virt manager interface click on the VyOs machine than use the run bouton on top followed by the open button to have access to your machine .
+
+[![01run.png](https://i.postimg.cc/43V7kFqH/01run.png)](https://postimg.cc/7CPYSXxq)
+
+You type Enter than you log in to access the VyOs shell 
+[![vyos-v-1-4-grub.png](https://i.postimg.cc/DzG5ZXxJ/vyos-v-1-4-grub.png)](https://postimg.cc/gwY3tnFm)
+
+Firt we will add the private network interface to the VyOs router , on the vyos window 
+`Show Virtual Hardware detail > Add Hardware > Network > Network Source > Select the private Network Interface > Finish `
+
+[![00-vyos-in-qemu.png](https://i.postimg.cc/KzH1zBbX/00-vyos-in-qemu.png)](https://postimg.cc/WF0NYDtS)
+
+[![01-virt-manager-hardware-detail.png](https://i.postimg.cc/tgCq0JxL/01-virt-manager-hardware-detail.png)](https://postimg.cc/w1Z8L6FV)
+
+[![02-virt-manager-setting.png](https://i.postimg.cc/prBctW86/02-virt-manager-setting.png)](https://postimg.cc/1VfrGZvG)
+
+[![03-virt-man-hardware-setting.png](https://i.postimg.cc/J4vYV2Bm/03-virt-man-hardware-setting.png)](https://postimg.cc/svP45Kc0)
+
+Once done return to the VyOs shell with top left button `Show The Graphical Console`
+
+[![04-virt-manager-hardware-detail.png](https://i.postimg.cc/QxC5kNCx/04-virt-manager-hardware-detail.png)](https://postimg.cc/GH0HbCvZ)
+
+On the VyOs console reboot the machine to make the change effective 
+```shell
+vyos@vyos:~$ reboot
+Proceed with reboot? (Yes/No) [No] Yes
+```
+
+### 
