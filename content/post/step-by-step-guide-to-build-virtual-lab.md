@@ -77,10 +77,119 @@ Linux based operating system supports all the mainstream hypervisor like [Virtua
 5. As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
 
 # Setting up virtual network interface 
-In our network we will have to network interfaces : 
 
-# Installation of VyOs router 
+In our network we will have 2 virtual switch , one in NAT mode that will have access to internet and one in isolated mode.
+
+The VyOs router will be connected to both the NAT network and the private network and will allow the machine on the private network to access the internet .
+[![virt-lab.png](https://i.postimg.cc/fT1cdvbT/virt-lab.png)](https://postimg.cc/HV48DX5f)
+
+## Activating default NAT interface 
+The __libvirt__ package comme with a default NAT configuration that we can activate with the following step :
+* We load the xml configuration  
+```shell
+$sudo virsh net-define /usr/share/libvirt/network/default.xml
+```
+* than we can activate the interface 
+```shell
+$sudo virsh net-start default
+[sudo] password for 0script:                            
+Network default started     
+```
+You can check for libvirt interface using `virs net-list`  , this command will show only activated interface : 
+```shell
+$sudo virsh net-list
+[sudo] password for 0script: 
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   no          yes
+```
+## Creation and activation of private isolated interface 
+We will use the xml format to create a new virtual network configuration for an isolated network , to do so create a file named `private.xml` and open it with a text editor and put the following inside :  
+```xml
+    <network>
+        <name>private</name>
+        <bridge name="virbr1" />
+        <ip address="192.168.152.1" netmask="255.255.255.0">
+            <dhcp>
+                <range start="192.168.152.2" end="192.168.152.254" />
+            </dhcp>
+        </ip>
+        <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
+    </network>
+```
+* name : Interface name
+* bridge : Virtual switch name libvirt create a default one named virbr0
+* ip : Define ip address type (v4/v6) address range and netmask
+* dhcp : Setting dhcp for the interface
+
+Now we can define and activate the virtual interface with  `virsh net-create private.xml`
+```shell
+$sudo virsh net-create private.xml 
+[sudo] password for 0script:
+Network private created from private.xml
+```
+
+Now if everything went as expected you should see both of our virtual interface with `sudo virsh net-list`
+```shell
+$sudo virsh net-list 
+[sudo] password for 0script: 
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   no          yes
+ private   active   no          no
+
+
+```
+
+# Installation of VyOs router
+
 Use this [link](https://vyos.io/subscriptions/software) to download the router iso file , take the free version .
+1. check for libvirt network interface : `sudo virsh net-list --all`
+    ```shell
+    $sudo virsh net-list --all
+    Name      State      Autostart   Persistent
+    ----------------------------------------------
+    default   inactive   no          yes
+    ```
+    * If this command do not show you any interface you can load the libvirt default network interface with the followint :
+    ```shell
+    $sudo sudo virsh net-define /usr/share/libvirt/networks/default.xml
+    ```
+    You should see a message confirming the creation of the interface .
+    
+    * Activate the interface  using `sudo virsh net-start default`
+    ```shell
+    $sudo virsh net-start default 
+        Network default started
+    ```
+    
+
+2. To create the private interface we create a file named `private.xml` and open it in a text editor and put the following inside :
+    ```xml
+        <network>
+            <name>private</name>
+            <bridge name="virbr1" />
+            <ip address="192.168.152.1" netmask="255.255.255.0">
+                <dhcp>
+                    <range start="192.168.152.2" end="192.168.152.254" />
+                </dhcp>
+            </ip>
+            <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
+        </network>
+    ```
+    The xml format is used to describe virtual network interface :
+    * name : interface name
+    * bridge : bridge name
+    * ip : define ip
+    * dhcp : setting dhcp for the interface
+
+    Save the file then open a terminal in the directory where the xml file is and run `virsh net-create private.xml` to     2:
+    ```shell
+    $sudo virsh net-create private.xml 
+    [sudo] password for 0script:
+    Network private created from private.xml
+    ``` 
+
 
 1. We will use the libvirt default network interface but first we need to activate it 
     1. check for libvirt network interface : `sudo virsh net-list --all`
