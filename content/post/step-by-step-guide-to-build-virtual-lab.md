@@ -271,4 +271,91 @@ vyos@vyos:~$ reboot
 Proceed with reboot? (Yes/No) [No] Yes
 ```
 
-### 
+### VyOs Configuration of the LAN
+* On the VyOs machine check if you have 2 network interface installed : 
+[![ip-a-command.png](https://i.postimg.cc/8Pyt4NX2/ip-a-command.png)](https://postimg.cc/kBbQX3ms)
+
+We will set up our network as with eth0 as WAN interface that will communicate with the outside word and receive its address via DHCP 
+
+And eth1 internal/LAN  will use a static IP address of 192.168.0.1/24.
+
+Firts of all you enter in configuration mode with the command `configure` you know you are in configuration mode when the shell display __#__ 
+
+```shell
+vyos@vyos$ configure
+vyos@vyos#
+```
+
+In configure mode we start by setting dhcp for eth0 and a static ip for eth1 , still in configuration enter the following command , after each command a single line with __[edit]__ confirming that the command have been executed succefully 
+
+```shell
+set interfaces ethernet eth0 address dhcp
+
+set interfaces ethernet eth0 description 'OUTSIDE'
+
+set interfaces ethernet eth1 address '192.168.152.10/24'
+
+set interfaces ethernet eth1 description 'INSIDE'
+```
+
+#### DHCP/DNS setting
+
+ Now as we are still in configuration mode we will set  the DHCP and DNS services on your internal/LAN network, where VyOS will act as the default gateway and DNS server.
+
+* The default gateway and DNS recursor address will be 192.168.152.10/24
+* The address range 192.168.152.2/24 - 192.168.152.49/24 will be reserved for static assignments
+* DHCP clients will be assigned IP addresses within the range of 192.168.152.50 - 192.168.152.254 and have a domain name of internal-network
+* DHCP address will be leased for 24 hours i.e __86400__ secondes
+* VyOS will serve as a full DNS server, replacing the need to utilize Google, Cloudflare, or other public DNS servers (which is good for privacy)
+* Only hosts from your internal/LAN network can use the DNS server
+
+
+```shell
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 default-router '192.168.152.10'
+
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 name-server '192.168.152.10'
+
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 domain-name 'vyos.router'
+
+set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 lease '86400'
+
+set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 range 0 start 192.168.0.50
+
+set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 range 0 stop '192.168.1.254'
+```
+
+* Finnaly , the following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade.
+
+```shell
+set nat source rule 100 outbound-interface 'eth0'
+
+set nat source rule 100 source address '192.168.152.0/24'
+
+set nat source rule 100 translation address masquerade
+```
+
+* Once done to apply the change use the command `commit` followed by `save` : 
+```shell
+commit
+
+save
+```
+
+We can exit the configuration mode and check for our setting by looking at the output of `ip a`
+[![ip-a-cmd.png](https://i.postimg.cc/m2ywb7QQ/ip-a-cmd.png)](https://postimg.cc/bsdbgDVJ)
+
+The LAN is working let's install others machines into our lab
+
+# Installation of ubuntu desktop
+
+I use  virtual box image for the installation that is avalaible on [osboxes](https://www.osboxes.org/virtualbox-images/) use this [link](https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.10/64bit.7z/download) to dowload the ubuntu virtual image 
+
+Once the set up downloaded we can start the installation using the __virt manager__ user interface 
+
+* Use the create machine button on virt manager
+
+[![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
+
+* Check import existing disk image to use the virtual box virtual image of ubuntu that you dowloaded you can use an iso file as well 
+[![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
+
