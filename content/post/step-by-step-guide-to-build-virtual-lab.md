@@ -158,88 +158,94 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
     [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
     * Click the button `Browse Local` to access file on your local machine 
-    * Go to the folder containing the iso file for vyos that you [download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
+    * Go to the folder containing the iso file for vyos that you [downloaded](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
     [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
     [![browse.png](https://i.postimg.cc/TPgx5WCS/browse.png)](https://postimg.cc/qtJS9gfX)
 
     * Once the image selecter , uncheck the automatic selection of os and enter Generic Os in the search bar  once done , it should look like this  , then i click forward to proceed 
+
     [![01.png](https://i.postimg.cc/V6D02N27/01.png)](https://postimg.cc/hzQGdKDx)
 
     * Now we are setting the virtual cpu and ram for or use case 2 cpu and 1gb of ram should be enough  and just after for the virtual hard drive I put 8gb 
+    
     [![02.png](https://i.postimg.cc/XvG651kQ/02.png)](https://postimg.cc/HJgND2Ky)
 
     [![03.png](https://i.postimg.cc/597BjPjX/03.png)](https://postimg.cc/Z0NBMx8m)
    
-   * Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking) 
+   * Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking)
+
     [![04.png](https://i.postimg.cc/NG5bcyxq/04.png)](https://postimg.cc/qgH2cvYj)
 
     * Once the installation is finished on the vyos machine press enter to run live mode 
+    
     [![04.png](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/7vyos.jpg)](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/)
 
 
-    * Use default user "vyos" and password  "vyos" to log in   
+    * Use default user "vyos" and password  "vyos" to log in 
+
     [![07.png](https://i.postimg.cc/zXbYQXQ0/07.png)](https://postimg.cc/8jSYJDN6)
 
-    * To complete the installation you need to run the commande `install image` on the shell using the installation wizard
-    ```shell
-    vyos@vyos:~$ install image
-    Welcome to the VyOS install program.  This script
-    will walk you through the process of installing the
-    VyOS image to a local hard drive.
-    Would you like to continue? (Yes/No) [Yes]: Yes  # Pressing Enter i.e to Yes
-    Probing drives: OK
-    Looking for pre-existing RAID groups...none found.
-    The VyOS image will require a minimum 2000MB root.
-    Would you like me to try to partition a drive automatically
-    or would you rather partition it manually with parted?  If
-    you have already setup your partitions, you may skip this step
-
-    Partition (Auto/Parted/Skip) [Auto]:    # Press Enter i.e to the default option here [Auto]
-
-    I found the following drives on your system:
-    sda    4294MB
-
-    Install the image on? [sda]:    # Press Enter to select default option
-
-    This will destroy all data on /dev/sda.
-    Continue? (Yes/No) [No]: Yes    # The instalation has started
-
-    How big of a root partition should I create? (2000MB - 4294MB) [4294]MB: # Press Enter to select default option
-
-    Creating filesystem on /dev/sda1: OK
-    Done!
-    Mounting /dev/sda1...
-    What would you like to name this image? [1.2.0-rolling+201809210337]:
-    OK.  This image will be named: 1.2.0-rolling+201809210337
-    Copying squashfs image...
-    Copying kernel and initrd images...
-    Done!
-    I found the following configuration files:
-        /opt/vyatta/etc/config.boot.default
-    Which one should I copy to sda? [/opt/vyatta/etc/config.boot.default]:  # Press Enter or Yes to select default option
-
-    Copying /opt/vyatta/etc/config.boot.default to sda.
-    Enter password for administrator account  # setting up new  password
-    Enter password for user 'vyos':
-    Retype password for user 'vyos':
-    I need to install the GRUB boot loader.
-    I found the following drives on your system:
-    sda    4294MB
-
-    Which drive should GRUB modify the boot partition on? [sda]:    # Press Enter or Yes to select default option
-
-    Setting up grub: OK
-    Done!
-    ```
-
-    * We need to restart the machine with the command `reboot` in order to make the change effective :
-    ```shell
-    vyos@vyos:~$ reboot
-    Proceed with reboot? (Yes/No) [No] Yes
-    ```
-
 ## Setting up VyOs
+
+### Install image 
+
+* To complete the installation you need to run the commande `install image` on the shell using the installation wizard
+    
+```shell
+vyos@vyos:~$ install image
+Welcome to the VyOS install program.  This script
+will walk you through the process of installing the
+VyOS image to a local hard drive.
+Would you like to continue? (Yes/No) [Yes]: Yes  # Pressing Enter i.e to Yes
+Probing drives: OK
+Looking for pre-existing RAID groups...none found.
+The VyOS image will require a minimum 2000MB root.
+Would you like me to try to partition a drive automatically
+or would you rather partition it manually with parted?  If
+you have already setup your partitions, you may skip this step
+
+Partition (Auto/Parted/Skip) [Auto]:    # Press Enter i.e to the default option here [Auto]
+
+I found the following drives on your system:sda    4294MB
+
+Install the image on? [sda]:    # Press Enter to select default option
+
+This will destroy all data on /dev/sda. Continue? (Yes/No) [No]: Yes    # The instalation has started
+
+How big of a root partition should I create? (2000MB - 4294MB) [4294]MB: # Press Enter to select default option
+
+Creating filesystem on /dev/sda1: OK
+Done!
+Mounting /dev/sda1...
+What would you like to name this image? [1.2.0-rolling+201809210337]:
+OK.  This image will be named: 1.2.0-rolling+201809210337
+Copying squashfs image...
+Copying kernel and initrd images...
+Done!
+I found the following configuration files:/opt/vyatta/etc/config.boot.default
+Which one should I copy to sda? [/opt/vyatta/etc/config.boot.default]:  # Press Enteror Yes to select default option
+
+Copying /opt/vyatta/etc/config.boot.default to sda.
+Enter password for administrator account  # setting up new  password
+Enter password for user 'vyos':
+Retype password for user 'vyos':
+I need to install the GRUB boot loader.
+I found the following drives on your system:
+sda    4294MB
+
+Which drive should GRUB modify the boot partition on? [sda]:    # Press Enter or Yes to select default option
+
+Setting up grub: OK
+Done!
+```
+
+* We need to restart the machine with the command `reboot` in order to make the change effective :
+```shell
+vyos@vyos:~$ reboot
+Proceed with reboot? (Yes/No) [No] Yes
+```
+
 
 ### Adding private network interface 
 
@@ -279,6 +285,7 @@ We will set up our network as with eth0 as WAN interface that will communicate w
 
 And eth1 internal/LAN  will use a static IP address of 192.168.0.1/24.
 
+
 Firts of all you enter in configuration mode with the command `configure` you know you are in configuration mode when the shell display __#__ 
 
 ```shell
@@ -286,19 +293,20 @@ vyos@vyos$ configure
 vyos@vyos#
 ```
 
-In configure mode we start by setting dhcp for eth0 and a static ip for eth1 , still in configuration enter the following command , after each command a single line with __[edit]__ confirming that the command have been executed succefully 
+#### DHCP/DNS setting
+
+In configure mode we start by setting dhcp for eth0 and a static ip for eth1  after each command a single line with __[edit]__ confirming that the command have been executed succefully 
 
 ```shell
 set interfaces ethernet eth0 address dhcp
-
 set interfaces ethernet eth0 description 'OUTSIDE'
-
 set interfaces ethernet eth1 address '192.168.152.10/24'
-
 set interfaces ethernet eth1 description 'INSIDE'
 ```
 
-#### DHCP/DNS setting
+[![1-vyos-set-dhcp-dns.png](https://i.postimg.cc/SK44KVP4/1-vyos-set-dhcp-dns.png)](https://postimg.cc/xX6hxGYp)
+
+##### Address setting
 
  Now as we are still in configuration mode we will set  the DHCP and DNS services on your internal/LAN network, where VyOS will act as the default gateway and DNS server.
 
@@ -312,44 +320,75 @@ set interfaces ethernet eth1 description 'INSIDE'
 
 ```shell
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 default-router '192.168.152.10'
-
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 name-server '192.168.152.10'
-
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 domain-name 'vyos.router'
-
-set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 lease '86400'
-
-set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 range 0 start 192.168.0.50
-
-set service dhcp-server shared-network-name LAN subnet 192.168.0.0/24 range 0 stop '192.168.1.254'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 lease '86400'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 start 192.168.152.50
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 stop '192.168.152.254'
 ```
 
-* Finnaly , the following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade.
+[![2vyos-address-setting.png](https://i.postimg.cc/NGZCkFkC/2vyos-address-setting.png)](https://postimg.cc/qgXGkkY2)
+
+##### Setting SNAT rule
+
+* The following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade than commit and save 
 
 ```shell
 set nat source rule 100 outbound-interface 'eth0'
-
 set nat source rule 100 source address '192.168.152.0/24'
-
 set nat source rule 100 translation address masquerade
+commit
+save
+```
+[![3vyos-set-nat-rule.png](https://i.postimg.cc/dVVWqCs1/3vyos-set-nat-rule.png)](https://postimg.cc/TpBj0pWM)
+
+##### Setting DNS forwarding 
+* We activate DNS service on eth1
+```shell
+set service dns forwarding listen-address 192.168.152.10
+
+set service dns forwarding allow-from 192.168.152.0/24
+
+set service dns forwarding cache-size 10240
 ```
 
-* Once done to apply the change use the command `commit` followed by `save` : 
+[![4-vyos-set-dns-forwarding.png](https://i.postimg.cc/YSYGmX8C/4-vyos-set-dns-forwarding.png)](https://postimg.cc/B8ZQrBdr)
+
+##### Adding DNS server
+
+* Now run the following command to use Cloudfare Google and Quad9 dns server
+
 ```shell
+set service dns forwarding name-server 1.1.1.1
+set service dns forwarding name-server 8.8.8.8
+set service dns forwarding name-server 9.9.9.9
+```
+
+* Specify a DNS server for the system to be used for DNS lookups than commit save and exit 
+
+
+```shell
+set system name-server 192.168.152.10
 commit
-
 save
-
 exit
 ```
 
-We can exit the configuration mode and check for our setting by looking at the output of `ip a`
-[![ip-a-cmd.png](https://i.postimg.cc/m2ywb7QQ/ip-a-cmd.png)](https://postimg.cc/bsdbgDVJ)
+##### Testing network 
 
-The LAN is working let's install others machines into our lab
+* check for interface : `show interface`
 
-## setting dns 
-enable and activate resolved.service just to avoid complication in the future 
+[![vyos-show-interfaces.png](https://i.postimg.cc/436XXzL0/vyos-show-interfaces.png)](https://postimg.cc/rdwBJtLG)
+
+* verify network connection with host vyos.org
+[![host-cmd.png](https://i.postimg.cc/KjRX3Lfx/host-cmd.png)](https://postimg.cc/SYF1wnHv)
+
+* verify nat rule : `show nat source rule`
+
+[![show-nat-source.png](https://i.postimg.cc/mrNmLDQj/show-nat-source.png)](https://postimg.cc/gwjV4GtL)
+
+* And now we verify the dns setting configuration by entering configuration mode `configure` and then `show service dns`
+[![show-service-dns.png](https://i.postimg.cc/RFtKSb5B/show-service-dns.png)](https://postimg.cc/ftwJ5CR2)
 
 # Installation of ubuntu desktop
 
@@ -361,6 +400,90 @@ Once the set up downloaded we can start the installation using the __virt manage
 
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-* Check import existing disk image to use the virtual box virtual image of ubuntu that you dowloaded you can use an iso file as well 
+* Check import existing disk image to use the virtual box virtual image as for me I'm using a virtual box image `.vdi`
+
 [![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
 
+* You hit browse to access your file manager than you locate the virtual image the step are the same then for the vyos installation 
+
+[![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
+
+[![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
+
+[![browse-ubuntu.png](https://i.postimg.cc/QtDd2XDc/browse-ubuntu.png)](https://postimg.cc/2qHYvNV5)
+
+* once the file selected click forward
+
+[![kvm-ubuntu01.png](https://i.postimg.cc/d1CSyYZN/kvm-ubuntu01.png)](https://postimg.cc/XGVgRt89)
+
+* here you set the memory and cpu
+
+[![kvm-ubuntu-cpu.png](https://i.postimg.cc/pd1Ld3g6/kvm-ubuntu-cpu.png)](https://postimg.cc/nsBJRSV4)
+
+* Because this is a virtual image instead of an iso file there is no hard drive setting so we end up by using the private virtual interface for our ubuntu desktop so it will be part of the LAN 
+
+[![kvm-ubuntu-network.png](https://i.postimg.cc/kGCPsdzG/kvm-ubuntu-network.png)](https://postimg.cc/ZBwQYXTz)
+
+* to login if you downloaded the virtual image from osboxes the default username and password are 'osboxes.org' 
+
+[![kvm-ubuntu-login.png](https://i.postimg.cc/J0WV4WQm/kvm-ubuntu-login.png)](https://postimg.cc/9R1NJKSN)
+
+* once logged in use Crtl+Alt+T to open a terminal 
+
+[![ubuntu-kvm-shell.png](https://i.postimg.cc/G2f0gbJx/ubuntu-kvm-shell.png)](https://postimg.cc/HcbPVDNr)
+
+* check the name of your ethernet interface with `ip link show` this name will be very important for the next part 
+
+[![ip-link-show1.png](https://i.postimg.cc/TwjGkK3M/ip-link-show1.png)](https://postimg.cc/r0pvsF4Q)
+
+* we will set a static route , to do so we open the file `/etc/netplan/01-network-manger-all.yaml` as root in a text editor and you make the following change
+    * Replace __enp1s0__ with the name of your own interface
+    * In this configuration we set a static ip : __192.168.152.15__ . And  default gateway and dns server 
+
+```yaml
+# Let NetworkManager manage all devices on this system
+network:
+    version: 2
+    renderer: NetworkManager
+    
+    ethernets:
+        enp1s0:
+            addresses:
+                - 192.168.152.15
+            routes:
+                - to: default
+                  via: 192.168.152.10
+            nameserver:
+                addresses: [192.168.152.10]
+```
+
+* To apply the change in a shell with run `sudo netplan apply` follower by `sudo systemctl restart NetworkManager` and check hostname resolution with `host google.com`
+
+[![default-gateway.png](https://i.postimg.cc/GmCcD0PS/default-gateway.png)](https://postimg.cc/CzcTyQQj)
+
+
+## Installation of kali linux 
+
+* We download a virtual image of kali linux made for qemu on the official [website](https://cdimage.kali.org/kali-2023.1/kali-linux-2023.1-qemu-amd64.7z) 
+
+* once the image downloaded and extracted we can follow the same step as for the installation of the ubuntu desktop 
+
+* Use the create machine button on virt manager
+
+[![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
+
+* Check import existing disk image to use the virtual box virtual image as for me I'm using a qemu virtual image `.qemu`
+
+[![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
+
+* You hit browse to access your file manager than you locate the virtual image the step are the same then for the vyos installation 
+
+[![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
+
+[![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
+
+[![browse-ubuntu.png](https://i.postimg.cc/QtDd2XDc/browse-ubuntu.png)](https://postimg.cc/2qHYvNV5)
+
+* once the file selected click forward
+
+[![kvm-ubuntu01.png](https://i.postimg.cc/d1CSyYZN/kvm-ubuntu01.png)](https://postimg.cc/XGVgRt89)
