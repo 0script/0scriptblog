@@ -339,12 +339,17 @@ set nat source rule 100 translation address masquerade
 commit
 
 save
+
+exit
 ```
 
 We can exit the configuration mode and check for our setting by looking at the output of `ip a`
 [![ip-a-cmd.png](https://i.postimg.cc/m2ywb7QQ/ip-a-cmd.png)](https://postimg.cc/bsdbgDVJ)
 
 The LAN is working let's install others machines into our lab
+
+## setting dns 
+enable and activate resolved.service just to avoid complication in the future 
 
 # Installation of ubuntu desktop
 
