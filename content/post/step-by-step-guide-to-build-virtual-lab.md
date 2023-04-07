@@ -546,7 +546,49 @@ iface eth0 inet static
 
 ## Installation of metasploitable 2
 
-Metasploitable2 is a ....
+Metasploitable2 (Linux) Metasploitable is an intentionally vulnerable Linux virtual machine. This VM can be used to conduct security training, test security tools, and practice common penetration testing techniques. 
 
-Download Metasploitable installation media
+First you have to [download](https://sourceforge.net/projects/metasploitable/files/latest/download) installation media if it is not already done after extracting the file you can use virt manager user interface to install the machine
 
+[![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
+
+
+* The installation media is still a virtual image 
+
+[![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
+
+
+[![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
+
+[![browse-msf.png](https://i.postimg.cc/05cxSHhs/browse-msf.png)](https://postimg.cc/K4kdSQZq)
+
+* We define it as a generic Os to go faster 
+
+[![dvwa-kvm-install.png](https://i.postimg.cc/FF8vGJFW/dvwa-kvm-install.png)](https://postimg.cc/Sj6HxRMC)
+
+* Set the cpu ram
+
+[![dvwa-cpu-kvm.png](https://i.postimg.cc/C1mhFF8R/dvwa-cpu-kvm.png)](https://postimg.cc/qh6VwHjr)
+
+* finally we give a name to the machin and we include it in our LAN by using the private isolated network as interface 
+
+[![metasploitable-kvm-install.png](https://i.postimg.cc/q7ZrYmHK/metasploitable-kvm-install.png)](https://postimg.cc/B8DRPB6Z)
+
+* The installation should be ok you can use the default username 'msfadmin' and password 'msfadmin' to login
+
+[![msf-login.png](https://i.postimg.cc/Dzbg1Z6X/msf-login.png)](https://postimg.cc/sBs7r3tj)
+
+* Now with use `sudo vim /etc/network/interfaces` to set the network interface , in vim you have to enter insert mode with __i__ to save and quit you use __Esc__ than __:qw__ , edit the file as follow 
+
+[![debian-static-net-setting.png](https://i.postimg.cc/jS6Q007J/debian-static-net-setting.png)](https://postimg.cc/v4B6fKXQ)
+
+* To apply the change you use `sudo /etc/inid.d/networking restart`
+
+[![debian-restart-networking.png](https://i.postimg.cc/j2zQsGF9/debian-restart-networking.png)](https://postimg.cc/GTmsKSrJ)
+
+* We verify the setting by doing nslookup and making sure that the vyos address `192.168.152.10` is present in the output 
+
+[![nslookup.png](https://i.postimg.cc/wxcmjcBS/nslookup.png)](https://postimg.cc/hhvjCmTr)
+
+
+## Conclusion 
