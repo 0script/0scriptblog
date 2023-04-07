@@ -482,8 +482,71 @@ network:
 
 [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
-[![browse-ubuntu.png](https://i.postimg.cc/QtDd2XDc/browse-ubuntu.png)](https://postimg.cc/2qHYvNV5)
 
-* once the file selected click forward
+[![qemu-kali-install.png](https://i.postimg.cc/2jwP98NZ/qemu-kali-install.png)](https://postimg.cc/CdRPz01h)
 
-[![kvm-ubuntu01.png](https://i.postimg.cc/d1CSyYZN/kvm-ubuntu01.png)](https://postimg.cc/XGVgRt89)
+* now that you have selected the media of installation enter genric os as os type and proceed 
+
+[![qemu-intall-kali-browse.png](https://i.postimg.cc/ZK7Y2zyw/qemu-intall-kali-browse.png)](https://postimg.cc/QH7rKPm7)
+
+* Now cpu and virtual ram setting 
+
+[![kvm-ubuntu-cpu.png](https://i.postimg.cc/pd1Ld3g6/kvm-ubuntu-cpu.png)](https://postimg.cc/nsBJRSV4)
+
+* And to finish the virtual machine name and we select the private bridge to add this machine into our LAN
+
+[![qemu-kali-install7.png](https://i.postimg.cc/Yqz4nPp9/qemu-kali-install7.png)](https://postimg.cc/ZC0K0Vvt)
+
+* You should now be in front of the kali grub press Enter to go faster
+
+[![kali-grub.png](https://i.postimg.cc/CKrBSntf/kali-grub.png)](https://postimg.cc/zLWXkvqJ)
+
+* The default user  if you used a virtual image from kali linux official website 'kali' with password 'kali'
+
+[![kali-login.png](https://i.postimg.cc/0QDscrTw/kali-login.png)](https://postimg.cc/348VwrJ8)
+
+* On the kali machin open a terminal , you can use the shortcut Crtl+Alt+T
+
+* On the terminal use `ip link show` to see the name of your interface
+My interface is named eth0 knowing it I can start to set a static ip 
+
+* In root mode open the file `/etc/network/interface` and edit it as follow :
+
+```shell
+# This file describe the network interfaces availabel on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static 
+    address 192.168.152.21
+    gateway 192.168.152.10
+```
+
+[![kali-net-setting.png](https://i.postimg.cc/kMkvvp7z/kali-net-setting.png)](https://postimg.cc/s14WVKQ4)
+
+* Save the file than run `sudo systemctl restart networking` to apply the change
+* You can now see the change with `ip a`
+    insert image here
+
+[![kali-static-ip.png](https://i.postimg.cc/sgwrWS56/kali-static-ip.png)](https://postimg.cc/18n2h8Cw)
+
+* Now open  `/etc/resolv.conf` with sudo and add the dns address in my  case `192.168.152.10` put it at the top of the file 
+
+[![kali-resolv.png](https://i.postimg.cc/D00gHDxs/kali-resolv.png)](https://postimg.cc/WqRgJ9Lb)
+
+* Apply the change with `sudo systemctl restart networking` and check with `nslookup google.com`
+
+[![kali-nslookup.png](https://i.postimg.cc/MGYmTx4V/kali-nslookup.png)](https://postimg.cc/nsCDS8nh)
+
+## Installation of metasploitable 2
+
+Metasploitable2 is a ....
+
+Download Metasploitable installation media
+
