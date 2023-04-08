@@ -8,11 +8,13 @@ draft: false
 
 # Content 
 
-* Overview
-* What you'll need 
-* Installation of a hypervisor 
-* Setting up virtual switch
-* Installation of VyOs router
+* [Overview](#overview)
+* [What you will need](#what-you-will-need) 
+* [Link to installation media](#link-to-installation-media) 
+* [Installing a hypervisor](#installing-a-hypervisor) 
+* [Setting up virtual switch](#setting-up-virtual-switch)
+* [Installation of vyOs](#installation-of-vyos)
+* [Installation of ubuntu desktop](#installation-of-ubuntu-desktop)
 
 # Overview
 
@@ -22,105 +24,111 @@ In the case of computing, a virtual laboratory allows you to have access to hard
 
 Overall, virtual laboratories offer a flexible and accessible way to explore new network concepts, conduct experiments, and try and develop malware with more flexibility and less risk.
 
-# What you'll need 
+
+# What You Will Need
+
+![My Computer Specs](https://i.redd.it/nzsn80mofzha1.png)
 
 __Before you start this tutorial__
 
-* __Prerquise__ : You are familiar with the linux operating system , you know how to install a application via the terminal and how to use a text editor like __vim__ or __nano__
+* __Software requirements :__ A computer with a __Linux__ desktop, preferably a _Debian-based_ distribution 
 
-* __Software requirements :__ A computer with a linux desktop on it preferably a debian based distribution 
+* __Hardware requirements :__ A computer manufactured after 2014 with at least 4 cores of CPU, at least 8 GB of RAM, and at least 100 GB of storage for the Linux partition 
 
-* __Hardware requirements :__ Any computer made after 2015 with at least 4 cores , at least 8gb of ram and at least 100gb of memory on the linux partition 
-![My Computer Specs](https://i.redd.it/nzsn80mofzha1.png)
+* __Prerquise__ : Familiarity with the Linux operating system, knowing how to install applications via the terminal and how to use a text editor such as __vim__ or __nano__ .
+Don't be the type to give up at the first obstacle. read carefully, use google, and don't let the documentation scare you. Good luck! 
 
-* __Mental Preparation :__ You need to be ready to stare at this tutorial and at the documentation of the tools we are going to use until any problem you face is solved .  
 
-* A computer with a linux distribution (Debian based prefered)
-* A basic understanding of the linux shell
-* How to use text editor like vim or nano
-* How to install a package using a package manager like apt, aptitude ,pacman etc.
+# Link to installation media
 
-* You can Download all the operating system needed with the following links :
-    * __VyOs__ a open source router and firewall that you can  [download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
-    * a virtual image for qemu of __kali linux__  linux distribution for ethical hacking you can  [download it here](https://cdimage.kali.org/kali-2022.4/kali-linux-2022.4-qemu-amd64.7z)
-    * __metasploitable2__ a linux server with security vulnerability that you can  [download on this website](https://sourceforge.net/projects/metasploitable/files/Metasploitable2/)
-    * A additional desktop here i'll use __CrunchBang__ a liightway debian based distribution with great performance and a good looking UI dowload the 64 bit virtual image version for virtual box on [the following site](https://www.osboxes.org/crunchbang/#crunchBang-11-waldorf-vbox) . 
+We will install a set of operating systems , they can be downloaded from the links below:
 
-# Installation of hypervisor
+* __VyOs__ a open source router and firewall :  [Download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
 
-## What is an hypervisor
+* Virtual image for qemu of __kali linux__  linux distribution for penetration testing [Download link](https://cdimage.kali.org/kali-2022.4/kali-linux-2022.4-qemu-amd64.7z)
 
-A hypervisor is a software program that allows you to create and run virtual machine .
-In a virtual machine , the hardware components  will be simulated by your [Hypervisor](https://www.vmware.com/topics/glossary/content/hypervisor.html) . Basically , the hypervisor will run on your main computer (_the host_) and present your virtual machine (_guest_) with some virtual hardware so your _guest_ will believe and act as if it was one computer by its own .
-Linux based operating system supports all the mainstream hypervisor like [VirtualBox](#https://www.virtualbox.org/) and [VMWare](#https://www.vmware.com/) , but for better performance it is recommended to use [KVM](#https://www.linux-kvm.org/page/Main_Page) the linux Kernel Based Virtualization  Machine , a virtualization solution for Linux system running on AMD or Intel CPU who have virtualization support  enabled .
+* A __ubuntu__ desktop : [Download here](https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.10/64bit.7z/download).
+
+* __Metasploitable2__ a Linux server with security flaws : [Download here](https://sourceforge.net/projects/metasploitable/files/Metasploitable2/)
+
+
+# Installing A Hypervisor
+
+## What Is A Hypervisor
+
+A hypervisor, also called a virtual machine manager, is a software layer that allows you to run multiple virtual machines (VMs) on a single physical host computer. A hypervisor creates a virtualized environment in which multiple operating systems can run simultaneously on the same physical hardware. 
+
+Linux-based operating systems support all mainstream hypervisors such as Virtualbox, VMware, etc., but for better performance, KVM (Kernel Virtualization Module) is the recommended software. 
+
 
 ## Verify Virtualisation Support
 
-First let's check if your computer support virtualization with the following command `$egrep -c '(vmx|svm)' /proc/cpuinfo`
-
-* With the __egrep__ commande you check if your CPU support virtualization , this command work for both intel and amd cpu by checking if one of the virtualisation support is in __/proc/cpuinfo__  
-
-* If the command return 0 you'll need to [activate virtualisation](#https://helpdeskgeek.com/how-to/how-to-enable-virtualization-in-bios-for-intel-and-amd/) support in the BIOS setting of your computer  
-
-* as example , the svm flag appears 16 time in my /proc/cpuinfo file   
+To make use of virtualization it is required that the virtualization module for the cpu have been activated , on your linux host machin open a terminal and enter `egrep -c '(vmx|svm)' /proc/cpuinfo` to verify if virtualization is enabled , if the command return 0 that will mean that virtualization is not enabled in your [BIOS setting](#https://helpdeskgeek.com/how-to/how-to-enable-virtualization-in-bios-for-intel-and-amd/) 
 
 ```shell
 $egrep -c '(svm|vmx)' /proc/cpuinfo
 16
 ```
+* We ask the number of line that contain _'svm'_ or _'vmx'_ in the file __/proc/cpuinfo__
 
-## Install kvm with package manager 
 
-Install the required package for kvm  
+## Install KVM with package manager 
+
+We need to install the packages `qemu-kvm`, `libvirt-daemon-system`, `libvirt-clients`,  `bridge-utils` and `virt-manager` using the package manager , __apt__ for debian
 ```shell
-$sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+$sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
 ```
 
-* Add your current user to the __libvirt__ group
-* Replace 'username' with the corresponding user for your machine then restart or relog in to make the change effective .
+If the installation is done we can check if the libvirt deamon is running `sudo systemctl status libvirtd |grep Active`
+```shell
+$sudo systemctl status libvirtd | grep Active
+    Active: active (running) since Sat 2023-04-08 07:06:44 CAT; 6h ago
+```
+* If the command return __inactive (dead)__ you need to start the process and check again : `sudo systemctl start libvirtd && systemctl status libvirtd |grep Active` .
+
+Now we will add our current user to the __libvirt__ group
 ```shell
 $sudo adduser 'username' libvirt
 ```
-
-* Check the installation by tipping the command `virsh list --all` , here is a example of the output on my machine :
-
+* Replace __'username'__ with the appropriate user for your computer and reboot or log out and log back in for the changes to take effect. 
+* Now verify that you are in libvirt group with `groups` :
 ```shell
-$virsh list --all
-Id   Name   State
---------------------
+$groups
+0script cdrom floppy sudo audio dip video plugdev netdev bluetooth libvirt lpadmin scanner docker
 ```
+* If the output do not contain __libvirt__ make sure that you logged out and relogged in after adding user to the group .
 
-* If your output there is a error , make sure that :
-    1. You reloged in or restarted your computer after adding user to __libvirt__ group ,
-    2. Check if the __libvirt__ daemon is enabled with `$systemctl status libvirtd.service | grep Active` 
-        ```shell
-            $sudo systemctl status libvirtd.service |grep Active
-            Active: active (running) since Fri 2023-02-17 19:42:15 CAT; 53min ago
-        ```
-        * If you see __inactive__ in the output you'll need to activate libvirtd with `systemctl start libvirtd.service`
 
-As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
+# Setting Up Virtual Switch
 
-# Setting up virtual network interface 
+Libvirt uses the concept of a virtual network switch : a software construction on the host machine, that your virtual machines "plug in" to, and direct their traffic through.
 
-In our network we will have 2 virtual switch , one in NAT mode that will have access to internet and one in isolated mode.
+![virt-switch.png](https://wiki.libvirt.org/images/Host_with_a_virtual_network_switch_and_two_guests.png)
 
-The VyOs router will be connected to both the NAT network and the private network and will allow the machine on the private network to access the internet .
+
+In our network, we will have 2 virtual switches: one in NAT mode that will have access to the internet, and one in isolated mode that will create a private LAN.
+
+The VyOs router will be connected to both the NAT and the private network and will allow the machine on the private network to access the internet.
+
 [![virt-lab.png](https://i.postimg.cc/fT1cdvbT/virt-lab.png)](https://postimg.cc/HV48DX5f)
 
-## Activating default NAT interface 
+
+## Activating Default NAT Interface 
+
 The __libvirt__ package comme with a default NAT configuration that we can activate with the following step :
-* We load the xml configuration  
+
+1. Load the xml configuration with `sudo virsh net-define `  
 ```shell
 $sudo virsh net-define /usr/share/libvirt/network/default.xml
 ```
-* than we can activate the interface 
+2. Than activate the interface  using : `sudo virsh net-start default`
 ```shell
 $sudo virsh net-start default
 [sudo] password for 0script:                            
 Network default started     
 ```
-You can check for libvirt interface using `virs net-list`  , this command will show only activated interface : 
+
+3. Check for libvirt the interfaces with  `virs net-list`  , this command shows only activated interfaces : 
 ```shell
 $sudo virsh net-list
 [sudo] password for 0script: 
@@ -128,33 +136,36 @@ $sudo virsh net-list
 --------------------------------------------
  default   active   no          yes
 ```
-## Creation and activation of private isolated interface 
-We will use the xml format to create a new virtual network configuration for an isolated network , to do so create a file named `private.xml` and open it with a text editor and put the following inside :  
-```xml
-    <network>
-        <name>private</name>
-        <bridge name="virbr1" />
-        <ip address="192.168.152.1" netmask="255.255.255.0">
-            <dhcp>
-                <range start="192.168.152.2" end="192.168.152.254" />
-            </dhcp>
-        </ip>
-        <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
-    </network>
-```
-* name : Interface name
-* bridge : Virtual switch name libvirt create a default one named virbr0
-* ip : Define ip address type (v4/v6) address range and netmask
-* dhcp : Setting dhcp for the interface
 
-Now we can define and activate the virtual interface with  `virsh net-create private.xml`
+
+## Creation Of  Virtual Switch In Isolated Mode 
+
+In __libvirt__, virtual switches are defined using XML files. Create a file named `private.xml` to set up the virtual switch, open it with a text editor, and put the following inside:  
+```xml
+<network>
+    <name>private</name>
+    <bridge name="virbr1" />
+    <ip address="192.168.152.1" netmask="255.255.255.0">
+        <dhcp>
+            <range start="192.168.152.2" end="192.168.152.254" />
+        </dhcp>
+    </ip>
+    <ip family="ipv6" address="2001:db8:ca2:3::1" prefix="64" />
+</network>
+```
+* _name_ : Interface name
+* _bridge_ : Virtual switch name libvirt create a default name for libvirt start with __virbr__ ending with an interger .
+* _ip_ : Define ip address type (v4/v6) addresses range and netmask
+* _dhcp_ : Enable and set dhcp for the network .
+
+Define and activate the virtual switch with : `virsh net-create private.xml`
 ```shell
-$sudo virsh net-create private.xml 
+$sudo virsh net-create private.xml
 [sudo] password for 0script:
 Network private created from private.xml
 ```
 
-Now if everything went as expected you should see both of our virtual interface with `sudo virsh net-list`
+If everything went as expected, you should see both of our virtual interfaces with `sudo virsh net-list`
 ```shell
 $sudo virsh net-list 
 [sudo] password for 0script: 
@@ -164,45 +175,46 @@ $sudo virsh net-list
  private   active   no          no
 ```
 
-# Installation of VyOs router
+# Installation Of VyOs
 
-Use this [link](https://vyos.io/subscriptions/software) to download the router iso file , take the free version .
+If you have not downloaded VyOs use the [link](https://vyos.io/subscriptions/software) to download .
 
-* Once the iso file downloaded we can start the installation  the vyos router ,on 
-    your computer search for the virt manager application and run it   
+* If you completed downloading vyos router ,on your computer you can search for the virt manager application and run it .
 
 ![Openning virtual manager](https://i.postimg.cc/7Zb2cBgj/0001.png)
 
-* Select create a new virtual machine on the top left button
+* Start to create a new virtual machine using the top left button
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-* Click forward as the media of installation for vyos is an iso file 
+* Here you chose the type of installation media for the operating system; for VyOS you downloaded an ISO file, so you can just click forward on this step. 
 ![Create New Virtual Machine](https://i.postimg.cc/8Pv5rqmp/0002.png)
 
-* select browse access the installation media   
+* Use the browse button to access the installation media. 
 [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
-* Click the button `Browse Local` to access file on your local machine 
-* Go to the folder containing the iso file for vyos that you [downloaded](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
+* To access the file on your local computer, select the "Browse Local" button, then navigate to the folder containing the VyOs ISO file.
+
 [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
 [![browse.png](https://i.postimg.cc/TPgx5WCS/browse.png)](https://postimg.cc/qtJS9gfX)
 
-* Once the image selecter , uncheck the automatic selection of os and enter Generic Os in the search bar  once done , it should look like this  , then i click forward to proceed 
+* Uncheck the box next to __Automatic OS Selection__ after choosing the ISO file, then type __Generic OS__ into the search box. When finished, it should look like this :
 
 [![01.png](https://i.postimg.cc/V6D02N27/01.png)](https://postimg.cc/hzQGdKDx)
 
-* Now we are setting the virtual cpu and ram for or use case 2 cpu and 1gb of ram should be enough  and just after for the virtual hard drive I put 8gb 
-    
+* In this part we set the virtual CPU and RAM, for or use case 2 core for CPU and 1GB of RAM should be enough, and just after for the virtual hard drive I put 8GB.
+
 [![02.png](https://i.postimg.cc/XvG651kQ/02.png)](https://postimg.cc/HJgND2Ky)
 
 [![03.png](https://i.postimg.cc/597BjPjX/03.png)](https://postimg.cc/Z0NBMx8m)
    
-* Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking)
+* Giving the machine a name and choosing a virtual switch are the final steps of installation. I give my machine the name VyOs and utilize the default switch.
+
+[provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking)
 
 [![04.png](https://i.postimg.cc/NG5bcyxq/04.png)](https://postimg.cc/qgH2cvYj)
 
-* Once the installation is finished on the vyos machine press enter to run live mode 
+* When the installation on the Vyos system is complete, hit Enter to launch live mode.
     
 [![04.png](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/7vyos.jpg)](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/)
 
@@ -211,12 +223,15 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
 
 [![07.png](https://i.postimg.cc/zXbYQXQ0/07.png)](https://postimg.cc/8jSYJDN6)
 
+
 ## Setting up VyOs
+
+![07.png](https://www.expertnetworkconsultant.com/wp-content/uploads/2018/07/ip-nat-inside-source-static.png)
+
 
 ### Install image 
 
-To complete the installation you need to run the commande `install image` on the shell using the installation wizard
-    
+Run the commande "install image" on the shell in order to use the installation wizard to complete the installation.
 ```shell
 vyos@vyos:~$ install image
 Welcome to the VyOS install program.  This script
@@ -265,7 +280,7 @@ Setting up grub: OK
 Done!
 ```
 
-* We need to restart the machine with the command `reboot` in order to make the change effective :
+* Restart the machine with the command `reboot` to make the change take effect.
 ```shell
 vyos@vyos:~$ reboot
 Proceed with reboot? (Yes/No) [No] Yes
@@ -274,55 +289,64 @@ Proceed with reboot? (Yes/No) [No] Yes
 
 ### Adding private network interface 
 
-On the virt manager interface click on the VyOs machine than use the run bouton on top followed by the open button to have access to your machine .
+We need to add a second network interface to __VyOs__ .
+
+If your VyOS machine is not running, you can start it with the run button of the virt-manager interface.
 
 [![01run.png](https://i.postimg.cc/43V7kFqH/01run.png)](https://postimg.cc/7CPYSXxq)
 
-You type Enter than you log in to access the VyOs shell 
+* On the grub, you can press Enter to avoid wasting time. 
 [![vyos-v-1-4-grub.png](https://i.postimg.cc/DzG5ZXxJ/vyos-v-1-4-grub.png)](https://postimg.cc/gwY3tnFm)
 
-Firt we will add the private network interface to the VyOs router , on the vyos window 
+We use virt manager to add a network interface to VyOs .
+
 `Show Virtual Hardware detail > Add Hardware > Network > Network Source > Select the private Network Interface > Finish `
+
+* Enter virtual machine hardware configuration .
 
 [![00-vyos-in-qemu.png](https://i.postimg.cc/KzH1zBbX/00-vyos-in-qemu.png)](https://postimg.cc/WF0NYDtS)
 
+* Hit '`Add Hardware Button`' button .
+
 [![01-virt-manager-hardware-detail.png](https://i.postimg.cc/tgCq0JxL/01-virt-manager-hardware-detail.png)](https://postimg.cc/w1Z8L6FV)
+
+* Select '`Network`' than in '`Network source`' select your __private__ virtual switch .
 
 [![02-virt-manager-setting.png](https://i.postimg.cc/prBctW86/02-virt-manager-setting.png)](https://postimg.cc/1VfrGZvG)
 
+* After finishing, the window should look something like this:
+
 [![03-virt-man-hardware-setting.png](https://i.postimg.cc/J4vYV2Bm/03-virt-man-hardware-setting.png)](https://postimg.cc/svP45Kc0)
 
-Once done return to the VyOs shell with top left button `Show The Graphical Console`
+* Return to the VyOs shell with top left button `Show The Graphical Console`
 
 [![04-virt-manager-hardware-detail.png](https://i.postimg.cc/QxC5kNCx/04-virt-manager-hardware-detail.png)](https://postimg.cc/GH0HbCvZ)
 
-On the VyOs console reboot the machine to make the change effective 
+* Reboot the machine to make the change effective.
 ```shell
 vyos@vyos:~$ reboot
 Proceed with reboot? (Yes/No) [No] Yes
 ```
 
+
 ### VyOs Configuration of the LAN
 
-On the VyOs machine check if you have 2 network interface installed : 
+Check to see if there are two network interfaces on the VyOs machine with `ip a` or `ip link show` or `show interfaces`:
+
 [![ip-a-command.png](https://i.postimg.cc/8Pyt4NX2/ip-a-command.png)](https://postimg.cc/kBbQX3ms)
 
-We will set up our network as with eth0 as WAN interface that will communicate with the outside word and receive its address via DHCP 
+In order to connect with the outside world, our network we will be using eth0 interface, which will receive its address via DHCP. And eth1 will serve for the LAN with a static address set to `192.168.152.10`.
 
-And eth1 internal/LAN  will use a static IP address of 192.168.0.1/24.
-
-
-Firts of all you enter in configuration mode with the command `configure` you know you are in configuration mode when the shell display __#__ 
-
+To make those changes in VYOS, enter configuration mode with the command `configure`. You know you are in configuration mode when the shell displays __#__
 ```shell
 vyos@vyos$ configure
 vyos@vyos#
 ```
 
+
 #### DHCP/DNS setting
 
-In configure mode we start by setting dhcp for eth0 and a static ip for eth1  after each command a single line with __[edit]__ confirming that the command have been executed succefully 
-
+In configuration mode, we first set dhcp for eth0 and after a static IP for eth1, each setting is followed by a single line ending with __[edit]__ to indicate that each command was successfully run.
 ```shell
 set interfaces ethernet eth0 address dhcp
 set interfaces ethernet eth0 description 'OUTSIDE'
@@ -334,31 +358,37 @@ set interfaces ethernet eth1 description 'INSIDE'
 
 ##### Address setting
 
- Now as we are still in configuration mode we will set  the DHCP and DNS services on your internal/LAN network, where VyOS will act as the default gateway and DNS server.
+Still in configuration mode we set the DHCP and DNS services for the internal/LAN network, where VyOS will act as the default gateway and DNS server.
 
-* The default gateway and DNS recursor address will be 192.168.152.10/24
+* `192.168.152.10/24` is the default gateway .
 * The address range 192.168.152.2/24 - 192.168.152.49/24 will be reserved for static assignments
-* DHCP clients will be assigned IP addresses within the range of 192.168.152.50 - 192.168.152.254 and have a domain name of internal-network
+* DHCP clients will be assigned IP addresses within the range of 192.168.152.50 - 192.168.152.254 and have a domain name of vyos-router
 * DHCP address will be leased for 24 hours i.e __86400__ secondes
 * VyOS will serve as a full DNS server, replacing the need to utilize Google, Cloudflare, or other public DNS servers (which is good for privacy)
 * Only hosts from your internal/LAN network can use the DNS server
-
-
 ```shell
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 default-router '192.168.152.10'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 name-server '192.168.152.10'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 domain-name 'vyos.router'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 lease '86400'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 start 192.168.152.50
-set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 stop '192.168.152.254'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 stop '192.
+168.152.254'
+
+set service dns forwarding listen-address 192.168.152.10
+set service dns forwarding allow-from 192.168.152.0/24
+set service dns forwarding cache-size 10240
 ```
+
 
 [![2vyos-address-setting.png](https://i.postimg.cc/NGZCkFkC/2vyos-address-setting.png)](https://postimg.cc/qgXGkkY2)
 
+[![3vyos-set-nat-rule.png](https://i.postimg.cc/dVVWqCs1/3vyos-set-nat-rule.png)](https://postimg.cc/TpBj0pWM)
+
+
 ##### Setting SNAT rule
 
-The following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade than commit and save 
-
+The following settings will configure SNAT rules for our internal network(LAN), allowing hosts to communicate through the outside network (WAN) via ip masquerade , after the setting use `commit` than `save` commandes . 
 ```shell
 set nat source rule 100 outbound-interface 'eth0'
 set nat source rule 100 source address '192.168.152.0/24'
@@ -366,32 +396,21 @@ set nat source rule 100 translation address masquerade
 commit
 save
 ```
-[![3vyos-set-nat-rule.png](https://i.postimg.cc/dVVWqCs1/3vyos-set-nat-rule.png)](https://postimg.cc/TpBj0pWM)
-
-##### Setting DNS forwarding 
-
-We activate DNS service on eth1
-```shell
-set service dns forwarding listen-address 192.168.152.10
-
-set service dns forwarding allow-from 192.168.152.0/24
-
-set service dns forwarding cache-size 10240
-```
 
 [![4-vyos-set-dns-forwarding.png](https://i.postimg.cc/YSYGmX8C/4-vyos-set-dns-forwarding.png)](https://postimg.cc/B8ZQrBdr)
 
+
+
 ##### Adding DNS server
 
-Now run the following command to use Cloudfare Google and Quad9 dns server
+The following command will use Cloudfare, Google, and Quad9 as DNS relays.
 ```shell
 set service dns forwarding name-server 1.1.1.1
 set service dns forwarding name-server 8.8.8.8
 set service dns forwarding name-server 9.9.9.9
 ```
 
-
-Specify a DNS server for the system to be used for DNS lookups than commit save and exit 
+Set  a DNS server for the system to be used for DNS lookups than commit save and exit .
 ```shell
 set system name-server 192.168.152.10
 commit
@@ -401,35 +420,44 @@ exit
 
 ##### Testing network 
 
-* check for interface : `show interface`
+* Check for interfaces : `show interface` .
 
 [![vyos-show-interfaces.png](https://i.postimg.cc/436XXzL0/vyos-show-interfaces.png)](https://postimg.cc/rdwBJtLG)
 
-* verify network connection with host vyos.org
+
+* Verify network connection with `host vyos.org` .
+
 [![host-cmd.png](https://i.postimg.cc/KjRX3Lfx/host-cmd.png)](https://postimg.cc/SYF1wnHv)
 
-* verify nat rule : `show nat source rule`
+
+* Verify nat rule : `show nat source rule`.
 
 [![show-nat-source.png](https://i.postimg.cc/mrNmLDQj/show-nat-source.png)](https://postimg.cc/gwjV4GtL)
 
-* And now we verify the dns setting configuration by entering configuration mode `configure` and then `show service dns`
+
+* Verify the dns setting configuration in configuration mode : `configure` and then `show service dns`.
+
 [![show-service-dns.png](https://i.postimg.cc/RFtKSb5B/show-service-dns.png)](https://postimg.cc/ftwJ5CR2)
 
-# Installation of ubuntu desktop
 
-I use  virtual box image for the installation that is avalaible on [osboxes](https://www.osboxes.org/virtualbox-images/) use this [link](https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.10/64bit.7z/download) to dowload the ubuntu virtual image 
+# Installation Of Ubuntu Desktop
 
-Once the set up downloaded we can start the installation using the __virt manager__ user interface 
+I use a virtual box image for the installation that is avalaible on [osboxes](https://www.osboxes.org/virtualbox-images/) use this [link](https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.10/64bit.7z/download) to dowload the ubuntu virtual image .
 
-* Use the create machine button on virt manager
+If you downloaded the file, extract it, and you can start the installation using the __Virtual Manager__ user interface.
+
+
+* Use the create machine button on virt manager.
 
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-* Check import existing disk image to use the virtual box virtual image as for me I'm using a virtual box image `.vdi`
+
+* Check to import an existing disk image to use the virtual box virtual image; for me, I'm using a virtual box image __(.vdi)__.
 
 [![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
 
-* You hit browse to access your file manager than you locate the virtual image the step are the same then for the vyos installation 
+
+* You hit browse to access your file manager, then you locate the virtual image. The steps are the same as for the VYOS installation. 
 
 [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
@@ -437,31 +465,38 @@ Once the set up downloaded we can start the installation using the __virt manage
 
 [![browse-ubuntu.png](https://i.postimg.cc/QtDd2XDc/browse-ubuntu.png)](https://postimg.cc/2qHYvNV5)
 
-* once the file selected click forward
+
+* If you selected the correct file you can proceed with '`Forward`'.
 
 [![kvm-ubuntu01.png](https://i.postimg.cc/d1CSyYZN/kvm-ubuntu01.png)](https://postimg.cc/XGVgRt89)
 
-* here you set the memory and cpu
+
+* The cpu and memory setting .
 
 [![kvm-ubuntu-cpu.png](https://i.postimg.cc/pd1Ld3g6/kvm-ubuntu-cpu.png)](https://postimg.cc/nsBJRSV4)
 
-* Because this is a virtual image instead of an iso file there is no hard drive setting so we end up by using the private virtual interface for our ubuntu desktop so it will be part of the LAN 
+
+* Because we used a virtual image as installation media , there is no hard drive setting so we end up by setting the name for our ubuntu desktop and we set the network to the private switch so it will be part of the LAN . 
 
 [![kvm-ubuntu-network.png](https://i.postimg.cc/kGCPsdzG/kvm-ubuntu-network.png)](https://postimg.cc/ZBwQYXTz)
 
-* to login if you downloaded the virtual image from osboxes the default username and password are 'osboxes.org' 
+
+* If you downloaded the virtual image from osboxes the default username and password are 'osboxes.org' .
 
 [![kvm-ubuntu-login.png](https://i.postimg.cc/J0WV4WQm/kvm-ubuntu-login.png)](https://postimg.cc/9R1NJKSN)
 
-* once logged in use Crtl+Alt+T to open a terminal 
+
+* In the ubuntu desktop use `Crtl+Alt+T` to open a terminal .
 
 [![ubuntu-kvm-shell.png](https://i.postimg.cc/G2f0gbJx/ubuntu-kvm-shell.png)](https://postimg.cc/HcbPVDNr)
 
-* check the name of your ethernet interface with `ip link show` this name will be very important for the next part 
+
+* Check the name of your ethernet interface with `ip link show` this name will be very important for the next part .
 
 [![ip-link-show1.png](https://i.postimg.cc/TwjGkK3M/ip-link-show1.png)](https://postimg.cc/r0pvsF4Q)
 
-* we will set a static route , to do so we open the file `/etc/netplan/01-network-manger-all.yaml` as root in a text editor and you make the following change
+
+* Set a static ip to the ubuntu desktop , to do so open the file `/etc/netplan/01-network-manger-all.yaml` as root in a text editor and you make the following change
     * Replace __enp1s0__ with the name of your own interface
     * In this configuration we set a static ip : __192.168.152.15__ . And  default gateway and dns server 
 
