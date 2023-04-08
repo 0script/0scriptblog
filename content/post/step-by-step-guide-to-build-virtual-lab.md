@@ -5,22 +5,36 @@ draft: false
 ---
 
 ![Virtual Lab](https://benisnous.com/wp-content/uploads/2021/03/how-to-build-a-HACKING-lab-to-become-a-hacker.jpg)
+
 # Content 
+
 * Overview
 * What you'll need 
 * Installation of a hypervisor 
-
+* Setting up virtual switch
+* Installation of VyOs router
 
 # Overview
-A virtual lab is an isolated space in which ethical hacker and security researcher can perform experimentation without causing any arm .
-In this article I will show you how to create your own virtual lab under a linux system .
+
+A virtual laboratory is a simulated environment that allows students, researchers, or professionals to perform laboratory experiments. Unlike traditional laboratory settings, virtual laboratories don't require any physical equipment or materials.
+
+In the case of computing, a virtual laboratory allows you to have access to hardware components on which you can test  software applications and network configuration without worrying about the cost or the risk of damaging newly acquired equipment.
+
+Overall, virtual laboratories offer a flexible and accessible way to explore new network concepts, conduct experiments, and try and develop malware with more flexibility and less risk.
 
 # What you'll need 
 
-* A computer with enough power  at least i3 not older than 2015 a minimum of 8gb or ram a swap memory(virtual ram) will be plus . As you can my set up
-consist of AMD Ryzen 7 cpu with 16GB of RAM and 22GB of swap memory so I'm good to proceed 
+__Before you start this tutorial__
 
+* __Prerquise__ : You are familiar with the linux operating system , you know how to install a application via the terminal and how to use a text editor like __vim__ or __nano__
+
+* __Software requirements :__ A computer with a linux desktop on it preferably a debian based distribution 
+
+* __Hardware requirements :__ Any computer made after 2015 with at least 4 cores , at least 8gb of ram and at least 100gb of memory on the linux partition 
 ![My Computer Specs](https://i.redd.it/nzsn80mofzha1.png)
+
+* __Mental Preparation :__ You need to be ready to stare at this tutorial and at the documentation of the tools we are going to use until any problem you face is solved .  
+
 * A computer with a linux distribution (Debian based prefered)
 * A basic understanding of the linux shell
 * How to use text editor like vim or nano
@@ -33,48 +47,59 @@ consist of AMD Ryzen 7 cpu with 16GB of RAM and 22GB of swap memory so I'm good 
     * A additional desktop here i'll use __CrunchBang__ a liightway debian based distribution with great performance and a good looking UI dowload the 64 bit virtual image version for virtual box on [the following site](https://www.osboxes.org/crunchbang/#crunchBang-11-waldorf-vbox) . 
 
 # Installation of hypervisor
+
+## What is an hypervisor
+
 A hypervisor is a software program that allows you to create and run virtual machine .
 In a virtual machine , the hardware components  will be simulated by your [Hypervisor](https://www.vmware.com/topics/glossary/content/hypervisor.html) . Basically , the hypervisor will run on your main computer (_the host_) and present your virtual machine (_guest_) with some virtual hardware so your _guest_ will believe and act as if it was one computer by its own .
 Linux based operating system supports all the mainstream hypervisor like [VirtualBox](#https://www.virtualbox.org/) and [VMWare](#https://www.vmware.com/) , but for better performance it is recommended to use [KVM](#https://www.linux-kvm.org/page/Main_Page) the linux Kernel Based Virtualization  Machine , a virtualization solution for Linux system running on AMD or Intel CPU who have virtualization support  enabled .
 
-1. First let's check if your computer support virtualization with the following command `$egrep -c '(vmx|svm)' /proc/cpuinfo`
-    * With the __egrep__ commande you check if your CPU support virtualization , this command work for both intel and amd cpu by checking if one of the virtualisation support is in __/proc/cpuinfo__  
+## Verify Virtualisation Support
 
-    * If the command return 0 you'll need to [activate virtualisation](#https://helpdeskgeek.com/how-to/how-to-enable-virtualization-in-bios-for-intel-and-amd/) support in the BIOS setting of your computer  
+First let's check if your computer support virtualization with the following command `$egrep -c '(vmx|svm)' /proc/cpuinfo`
 
-    * as example , the svm flag appears 16 time in my /proc/cpuinfo file   
+* With the __egrep__ commande you check if your CPU support virtualization , this command work for both intel and amd cpu by checking if one of the virtualisation support is in __/proc/cpuinfo__  
 
-    ```shell
-    $egrep -c '(svm|vmx)' /proc/cpuinfo
-    16
-    ```
-2. Install the required package for kvm  
-    ```shell
-    $sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
-    ```
+* If the command return 0 you'll need to [activate virtualisation](#https://helpdeskgeek.com/how-to/how-to-enable-virtualization-in-bios-for-intel-and-amd/) support in the BIOS setting of your computer  
 
-3. Add your current user to the __libvirt__ group
-    ```shell
-    $sudo adduser 'username' libvirt
-    ```
-    * Replace 'username' with the corresponding user for your machine then restart or relog in to make the change effective .
+* as example , the svm flag appears 16 time in my /proc/cpuinfo file   
 
-4. Check the installation by tipping the command `virsh list --all` , here is a example of the output on my machine :
-    ```shell
-    $virsh list --all
-    Id   Name   State
-    --------------------
-    ```
-    * If your output there is a error , make sure that :
-        1. You reloged in or restarted your computer after adding user to __libvirt__ group ,
-        2. Check if the __libvirt__ daemon is enabled with `$systemctl status libvirtd.service | grep Active` 
-            ```shell
-                $sudo systemctl status libvirtd.service |grep Active
-                Active: active (running) since Fri 2023-02-17 19:42:15 CAT; 53min ago
-            ```
-            * If you see __inactive__ in the output you'll need to activate libvirtd with `systemctl start libvirtd.service`
+```shell
+$egrep -c '(svm|vmx)' /proc/cpuinfo
+16
+```
 
-5. As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
+## Install kvm with package manager 
+
+Install the required package for kvm  
+```shell
+$sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+```
+
+* Add your current user to the __libvirt__ group
+* Replace 'username' with the corresponding user for your machine then restart or relog in to make the change effective .
+```shell
+$sudo adduser 'username' libvirt
+```
+
+* Check the installation by tipping the command `virsh list --all` , here is a example of the output on my machine :
+
+```shell
+$virsh list --all
+Id   Name   State
+--------------------
+```
+
+* If your output there is a error , make sure that :
+    1. You reloged in or restarted your computer after adding user to __libvirt__ group ,
+    2. Check if the __libvirt__ daemon is enabled with `$systemctl status libvirtd.service | grep Active` 
+        ```shell
+            $sudo systemctl status libvirtd.service |grep Active
+            Active: active (running) since Fri 2023-02-17 19:42:15 CAT; 53min ago
+        ```
+        * If you see __inactive__ in the output you'll need to activate libvirtd with `systemctl start libvirtd.service`
+
+As last we install a graphic interface for the KVM hypervisor : `sudo apt-get install virt-manager`
 
 # Setting up virtual network interface 
 
@@ -146,51 +171,51 @@ Use this [link](https://vyos.io/subscriptions/software) to download the router i
 * Once the iso file downloaded we can start the installation  the vyos router ,on 
     your computer search for the virt manager application and run it   
 
-    ![Openning virtual manager](https://i.postimg.cc/7Zb2cBgj/0001.png)
+![Openning virtual manager](https://i.postimg.cc/7Zb2cBgj/0001.png)
 
-    * Select create a new virtual machine on the top left button
-    [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
+* Select create a new virtual machine on the top left button
+[![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-    * Click forward as the media of installation for vyos is an iso file 
-    ![Create New Virtual Machine](https://i.postimg.cc/8Pv5rqmp/0002.png)
+* Click forward as the media of installation for vyos is an iso file 
+![Create New Virtual Machine](https://i.postimg.cc/8Pv5rqmp/0002.png)
 
-    * select browse access the installation media   
-    [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
+* select browse access the installation media   
+[![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
-    * Click the button `Browse Local` to access file on your local machine 
-    * Go to the folder containing the iso file for vyos that you [downloaded](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
-    [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
+* Click the button `Browse Local` to access file on your local machine 
+* Go to the folder containing the iso file for vyos that you [downloaded](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
+[![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
-    [![browse.png](https://i.postimg.cc/TPgx5WCS/browse.png)](https://postimg.cc/qtJS9gfX)
+[![browse.png](https://i.postimg.cc/TPgx5WCS/browse.png)](https://postimg.cc/qtJS9gfX)
 
-    * Once the image selecter , uncheck the automatic selection of os and enter Generic Os in the search bar  once done , it should look like this  , then i click forward to proceed 
+* Once the image selecter , uncheck the automatic selection of os and enter Generic Os in the search bar  once done , it should look like this  , then i click forward to proceed 
 
-    [![01.png](https://i.postimg.cc/V6D02N27/01.png)](https://postimg.cc/hzQGdKDx)
+[![01.png](https://i.postimg.cc/V6D02N27/01.png)](https://postimg.cc/hzQGdKDx)
 
-    * Now we are setting the virtual cpu and ram for or use case 2 cpu and 1gb of ram should be enough  and just after for the virtual hard drive I put 8gb 
+* Now we are setting the virtual cpu and ram for or use case 2 cpu and 1gb of ram should be enough  and just after for the virtual hard drive I put 8gb 
     
-    [![02.png](https://i.postimg.cc/XvG651kQ/02.png)](https://postimg.cc/HJgND2Ky)
+[![02.png](https://i.postimg.cc/XvG651kQ/02.png)](https://postimg.cc/HJgND2Ky)
 
-    [![03.png](https://i.postimg.cc/597BjPjX/03.png)](https://postimg.cc/Z0NBMx8m)
+[![03.png](https://i.postimg.cc/597BjPjX/03.png)](https://postimg.cc/Z0NBMx8m)
    
-   * Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking)
+* Name the machine and select as virtual network interface the  default nat network device [provided by the kvm packages](https://www.ibm.com/docs/en/linux-on-systems?topic=choices-kvm-default-nat-based-networking)
 
-    [![04.png](https://i.postimg.cc/NG5bcyxq/04.png)](https://postimg.cc/qgH2cvYj)
+[![04.png](https://i.postimg.cc/NG5bcyxq/04.png)](https://postimg.cc/qgH2cvYj)
 
-    * Once the installation is finished on the vyos machine press enter to run live mode 
+* Once the installation is finished on the vyos machine press enter to run live mode 
     
-    [![04.png](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/7vyos.jpg)](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/)
+[![04.png](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/7vyos.jpg)](https://www.linuxcompatible.org/data/publish/201/d89a50e839b4319a6a279bcb82b354573aff2b/)
 
 
-    * Use default user "vyos" and password  "vyos" to log in 
+* Use default user "vyos" and password  "vyos" to log in 
 
-    [![07.png](https://i.postimg.cc/zXbYQXQ0/07.png)](https://postimg.cc/8jSYJDN6)
+[![07.png](https://i.postimg.cc/zXbYQXQ0/07.png)](https://postimg.cc/8jSYJDN6)
 
 ## Setting up VyOs
 
 ### Install image 
 
-* To complete the installation you need to run the commande `install image` on the shell using the installation wizard
+To complete the installation you need to run the commande `install image` on the shell using the installation wizard
     
 ```shell
 vyos@vyos:~$ install image
@@ -278,7 +303,8 @@ Proceed with reboot? (Yes/No) [No] Yes
 ```
 
 ### VyOs Configuration of the LAN
-* On the VyOs machine check if you have 2 network interface installed : 
+
+On the VyOs machine check if you have 2 network interface installed : 
 [![ip-a-command.png](https://i.postimg.cc/8Pyt4NX2/ip-a-command.png)](https://postimg.cc/kBbQX3ms)
 
 We will set up our network as with eth0 as WAN interface that will communicate with the outside word and receive its address via DHCP 
@@ -331,7 +357,7 @@ set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 
 
 ##### Setting SNAT rule
 
-* The following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade than commit and save 
+The following settings will configure SNAT rules for our internal/LAN network, allowing hosts to communicate through the outside/WAN network via IP masquerade than commit and save 
 
 ```shell
 set nat source rule 100 outbound-interface 'eth0'
@@ -343,7 +369,8 @@ save
 [![3vyos-set-nat-rule.png](https://i.postimg.cc/dVVWqCs1/3vyos-set-nat-rule.png)](https://postimg.cc/TpBj0pWM)
 
 ##### Setting DNS forwarding 
-* We activate DNS service on eth1
+
+We activate DNS service on eth1
 ```shell
 set service dns forwarding listen-address 192.168.152.10
 
@@ -356,17 +383,15 @@ set service dns forwarding cache-size 10240
 
 ##### Adding DNS server
 
-* Now run the following command to use Cloudfare Google and Quad9 dns server
-
+Now run the following command to use Cloudfare Google and Quad9 dns server
 ```shell
 set service dns forwarding name-server 1.1.1.1
 set service dns forwarding name-server 8.8.8.8
 set service dns forwarding name-server 9.9.9.9
 ```
 
-* Specify a DNS server for the system to be used for DNS lookups than commit save and exit 
 
-
+Specify a DNS server for the system to be used for DNS lookups than commit save and exit 
 ```shell
 set system name-server 192.168.152.10
 commit
