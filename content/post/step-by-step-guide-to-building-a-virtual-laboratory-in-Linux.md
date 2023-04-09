@@ -572,7 +572,7 @@ Here the [link](https://cdimage.kali.org/kali-2023.1/kali-linux-2023.1-qemu-amd6
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
 
-* Check `Import Exustubg dusj unage` if you are using a virtual image like me.
+* Check `Import Existing disk image` if you are using a virtual image like me.
 
 [![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
 
@@ -708,10 +708,10 @@ If you followed all the steps, you should have up to five operating systems on y
 [![final-setup.png](https://i.postimg.cc/VkpypBr6/final-setup.png)](https://postimg.cc/jDHkJfh0)
 
 
-In conclusion, creating a virtual laboratory for penetration testing  is a great way to ensure a safe and efficient environment for carrying out various testing procedures. With KVM, you can easily create and manage virtual machines and provide yourself with a complete isolated environment . 
+In conclusion, creating a virtual laboratory for penetration testing  is a great way to ensure a safe and efficient environment for carrying out various testing procedures. With KVM, you can easily create and manage virtual machines and provide yourself with a complete isolated environment.  
 
 It is important to note that penetration testing should only be done with the proper authorization and consent of the target organization. Otherwise, it can be considered illegal and unethical. This emphasizes the importance of owning your own laboratory as an ethical hacker to avoid complications with the law.
 
-If you're interested in learning more about cybersecurity and related topics, check out our other articles on this blog. In particular, you may want to read our article on the implementation of a botnet, which can be used for various purposes, including distributed denial-of-service (DDoS) attacks and spam campaigns, the perfect exercice to start experimenting with your virtual laboratory .  Click here to read the article: [simple-botnet](https://0script.netlify.app/simple-botnet/)
+If you're interested in learning more about cybersecurity and related topics, check out our other articles on this blog. In particular, you may want to read our article on the implementation of a botnet, which can be used for various purposes, including distributed denial-of-service (DDoS) attacks and spam campaigns, the perfect exercice to start experimenting with your virtual laboratory .  Click here to read the article: [simple-botnet](https://0script.netlify.app/simple-botnet/).
 
 Thank you for reading, and we hope this article has been informative and helpful. If you want to propose any improvement or if you notice any mistakes, contact me via <a href="mailto:z5r00script.com">Email</a>.
