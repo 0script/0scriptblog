@@ -34,25 +34,26 @@ Overall, virtual laboratories offer a flexible and accessible way to explore new
 
 __Before you start this tutorial__
 
-* __Software requirements :__ A computer with a __Linux__ desktop, preferably a _Debian-based_ distribution 
+* __Software requirements :__ A computer with a __Linux__ desktop, preferably a _Debian-based_ distribution. 
 
-* __Hardware requirements :__ A computer manufactured after 2014 with at least 4 cores of CPU, at least 8 GB of RAM, and at least 100 GB of storage for the Linux partition 
+* __Hardware requirements :__ A computer manufactured after 2014 with at least 4 cores of CPU, at least 8 GB of RAM, and at least 100 GB of storage for the Linux partition.
 
 * __Prerquise__ : Familiarity with the Linux operating system, knowing how to install applications via the terminal and how to use a text editor such as __vim__ or __nano__ .
-Don't be the type to give up at the first obstacle. read carefully, use google, and don't let the documentation scare you. Good luck! 
+Don't be the type to give up at the first obstacle. read carefully, use google, and don't let the documentation scare you. Good luck!
 
 
 # Link to installation media
 
 We will install a set of operating systems , they can be downloaded from the links below:
 
-* __VyOs__ a open source router and firewall :  [Download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso)
+* __VyOs__ a open source router and firewall :  [Download here](https://s3-us.vyos.io/rolling/current/vyos-1.4-rolling-202302110324-amd64.iso).
 
-* Virtual image for qemu of __kali linux__  linux distribution for penetration testing [Download link](https://cdimage.kali.org/kali-2022.4/kali-linux-2022.4-qemu-amd64.7z)
+* Virtual image for qemu of __kali linux__  linux distribution for penetration testing [Download link](https://cdimage.kali.org/kali-2022.4/kali-linux-2022.4-qemu-amd64.7z).
 
 * A __ubuntu__ desktop : [Download here](https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.10/64bit.7z/download).
 
-* __Metasploitable2__ a Linux server with security flaws : [Download here](https://sourceforge.net/projects/metasploitable/files/Metasploitable2/)
+* __Metasploitable2__ a Linux server with security flaws : [Download here](https://sourceforge.net/projects/metasploitable/files/Metasploitable2/).  
+
 
 
 # Installing A Hypervisor
