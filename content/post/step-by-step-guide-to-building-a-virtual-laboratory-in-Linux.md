@@ -1,6 +1,6 @@
 ---
-title: "Step by Step Guide to Build Virtual Lab In Linux With Kvm"
-date: 2023-04-09T14:09:00+02:00
+title: "Step by Step Guide to Building a Virtual Laboratory in Linux"
+date: 2023-04-09T09:53:33+02:00
 draft: false
 ---
 
