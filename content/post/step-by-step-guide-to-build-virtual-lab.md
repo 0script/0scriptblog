@@ -1,6 +1,6 @@
 ---
 title: "Step by Step Guide to Build Virtual Lab In Linux With Kvm"
-date: 2023-02-10T14:19:56+02:00
+date: 2023-04-09T14:09:00+02:00
 draft: false
 ---
 
@@ -15,6 +15,9 @@ draft: false
 * [Setting up virtual switch](#setting-up-virtual-switch)
 * [Installation of vyOs](#installation-of-vyos)
 * [Installation of ubuntu desktop](#installation-of-ubuntu-desktop)
+* [Installation of Kali Linux](#installation-of-kali-linux)
+* [Installation of Metasploitable2](#installation-of-metasploitable2)
+* [Conclusion](#conclusion)
 
 # Overview
 
@@ -58,7 +61,7 @@ We will install a set of operating systems , they can be downloaded from the lin
 
 A hypervisor, also called a virtual machine manager, is a software layer that allows you to run multiple virtual machines (VMs) on a single physical host computer. A hypervisor creates a virtualized environment in which multiple operating systems can run simultaneously on the same physical hardware. 
 
-Linux-based operating systems support all mainstream hypervisors such as Virtualbox, VMware, etc., but for better performance, KVM (Kernel Virtualization Module) is the recommended software. 
+Linux-based operating systems support all mainstream hypervisors such as Virtualbox, VMware, etc., but for better performance, KVM (Kernel Based Virtual Machine) is the recommended software. 
 
 
 ## Verify Virtualisation Support
@@ -491,14 +494,14 @@ If you downloaded the file, extract it, and you can start the installation using
 [![ubuntu-kvm-shell.png](https://i.postimg.cc/G2f0gbJx/ubuntu-kvm-shell.png)](https://postimg.cc/HcbPVDNr)
 
 
-* Check the name of your ethernet interface with `ip link show` this name will be very important for the next part .
+* Check the name of your ethernet interface with `ip link show` this name is very important for the next part .
 
 [![ip-link-show1.png](https://i.postimg.cc/TwjGkK3M/ip-link-show1.png)](https://postimg.cc/r0pvsF4Q)
 
 
-* Set a static ip to the ubuntu desktop , to do so open the file `/etc/netplan/01-network-manger-all.yaml` as root in a text editor and you make the following change
+* Set a static ip to the ubuntu desktop , to do so open the file `/etc/netplan/01-network-manger-all.yaml` as root with text editor and you make the following change
     * Replace __enp1s0__ with the name of your own interface
-    * In this configuration we set a static ip : __192.168.152.15__ . And  default gateway and dns server 
+    * In this configuration we set a static ip : __192.168.152.15__ . The  default gateway and the dns relay .
 
 ```yaml
 # Let NetworkManager manage all devices on this system
@@ -517,61 +520,97 @@ network:
                 addresses: [192.168.152.10]
 ```
 
-* To apply the change in a shell with run `sudo netplan apply` follower by `sudo systemctl restart NetworkManager` and check hostname resolution with `host google.com`
+
+* Run `sudo netplan apply` in a shell to make the change take effect, then `sudo systemctl restart NetworkManager` to restart the __NetworkManager__ service followed by `host google.com` to test hostname resolution.
 
 [![default-gateway.png](https://i.postimg.cc/GmCcD0PS/default-gateway.png)](https://postimg.cc/CzcTyQQj)
 
 
+* If the command `netplan apply` returns errors, most likely the issue is in the `/etc/netplan/01-network-manager-all.yaml` configuration file. A __(.yaml)__ config file can be tricky, so if you have a hard time writing it, here is the same configuration in a __JSON__ format that you can convert to __(.yaml)__ format using an online tool like [jsontoyaml](https://json2yaml.com/) .
+
+```JSON
+// Network configuration in JSON format , need to be converted into YAML file
+//Let NetworkManager manage all devices on this system
+{
+    "network": {
+        "version": 2,
+        "renderer": "NetworkManager",
+        "ethernets": {
+            "enp1s0": {
+                "addresses": [
+                    "192.168.152.15"
+                ],
+                "routes": [
+                    {
+                        "to": "default",
+                        "via": "192.168.152.10"
+                    }
+                ],
+                "nameserver": {
+                    "addresses": [
+                        "192.168.152.10"
+                    ]
+                }
+            }
+        }
+    }
+}
+```
+
+
+
 ## Installation of kali linux 
 
-* We download a virtual image of kali linux made for qemu on the official [website](https://cdimage.kali.org/kali-2023.1/kali-linux-2023.1-qemu-amd64.7z) 
+* Download the installation file for Kali Linux,   in my case I use a __qemu__ vitual image , but you can use any Kali installation media that you have.
+Here the [link](https://cdimage.kali.org/kali-2023.1/kali-linux-2023.1-qemu-amd64.7z)  to download Kali .
 
-* once the image downloaded and extracted we can follow the same step as for the installation of the ubuntu desktop 
 
-* Use the create machine button on virt manager
+* If you have a Kali Linux setup to install, you can start the installation with the `Virtual Manager` application.
+* Use the `Create New Virtual Machine` button .
 
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
-* Check import existing disk image to use the virtual box virtual image as for me I'm using a qemu virtual image `.qemu`
+
+* Check `Import Exustubg dusj unage` if you are using a virtual image like me.
 
 [![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
 
-* You hit browse to access your file manager than you locate the virtual image the step are the same then for the vyos installation 
+
+* You hit Browse to access your file manager, then you locate the pre-built image. The steps are the same for the VYOS installation .
 
 [![cvyos3.png](https://i.postimg.cc/brW8Jd8s/cvyos3.png)](https://postimg.cc/64rFbW8X)
 
 [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
-
 [![qemu-kali-install.png](https://i.postimg.cc/2jwP98NZ/qemu-kali-install.png)](https://postimg.cc/CdRPz01h)
 
-* now that you have selected the media of installation enter genric os as os type and proceed 
+
+* After the selection of the installation media it should look like this. 
 
 [![qemu-intall-kali-browse.png](https://i.postimg.cc/ZK7Y2zyw/qemu-intall-kali-browse.png)](https://postimg.cc/QH7rKPm7)
 
-* Now cpu and virtual ram setting 
+
+* The CPU and RAM setting .
 
 [![kvm-ubuntu-cpu.png](https://i.postimg.cc/pd1Ld3g6/kvm-ubuntu-cpu.png)](https://postimg.cc/nsBJRSV4)
 
-* And to finish the virtual machine name and we select the private bridge to add this machine into our LAN
+
+* To finish you set name and you put this machine in the LAN by using `private` as network switch .
 
 [![qemu-kali-install7.png](https://i.postimg.cc/Yqz4nPp9/qemu-kali-install7.png)](https://postimg.cc/ZC0K0Vvt)
 
-* You should now be in front of the kali grub press Enter to go faster
+
+* A successfull installation will redirect you to the Kali Linux Grub .
 
 [![kali-grub.png](https://i.postimg.cc/CKrBSntf/kali-grub.png)](https://postimg.cc/zLWXkvqJ)
 
-* The default user  if you used a virtual image from kali linux official website 'kali' with password 'kali'
+
+* The default user is 'kali' with passwork 'kali' .
 
 [![kali-login.png](https://i.postimg.cc/0QDscrTw/kali-login.png)](https://postimg.cc/348VwrJ8)
 
-* On the kali machin open a terminal , you can use the shortcut Crtl+Alt+T
 
-* On the terminal use `ip link show` to see the name of your interface
-My interface is named eth0 knowing it I can start to set a static ip 
-
-* In root mode open the file `/etc/network/interface` and edit it as follow :
-
+* Open a terminal in the Kali machine; on the terminal, use `ip link show` to see the name of your network interface. My interface is named __eth0__, and knowing that, I can start to set a static IP. With sudo, open the file `/etc/network/interface` and edit it as follows:
 ```shell
 # This file describe the network interfaces availabel on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -585,70 +624,93 @@ iface lo inet loopback
 auto eth0
 iface eth0 inet static 
     address 192.168.152.21
+    netmask 255.255.255.0
+    network 192.168.152.0
+    broadcast 192.168.152.255
     gateway 192.168.152.10
+    dns-nameservers 192.168.152.10
+
 ```
 
-[![kali-net-setting.png](https://i.postimg.cc/kMkvvp7z/kali-net-setting.png)](https://postimg.cc/s14WVKQ4)
+[![kali-net-setting.png](https://i.postimg.cc/L64KcWnN/kali-net-setting.png)](https://postimg.cc/w3rGJ05m)
 
-* Save the file than run `sudo systemctl restart networking` to apply the change
-* You can now see the change with `ip a`
-    insert image here
+
+* Save the file, then run `sudo systemctl restart networking` to apply the change.You can now see the change with `ip a`.
 
 [![kali-static-ip.png](https://i.postimg.cc/sgwrWS56/kali-static-ip.png)](https://postimg.cc/18n2h8Cw)
 
-* Now open  `/etc/resolv.conf` with sudo and add the dns address in my  case `192.168.152.10` put it at the top of the file 
 
-[![kali-resolv.png](https://i.postimg.cc/D00gHDxs/kali-resolv.png)](https://postimg.cc/WqRgJ9Lb)
-
-* Apply the change with `sudo systemctl restart networking` and check with `nslookup google.com`
+* Check for hostname resolution with `nslookup google.com` you should see the address of the vyos router in the output .
 
 [![kali-nslookup.png](https://i.postimg.cc/MGYmTx4V/kali-nslookup.png)](https://postimg.cc/nsCDS8nh)
 
-## Installation of metasploitable 2
+
+
+# Installation of Metasploitable2
 
 Metasploitable2 (Linux) Metasploitable is an intentionally vulnerable Linux virtual machine. This VM can be used to conduct security training, test security tools, and practice common penetration testing techniques. 
 
-First you have to [download](https://sourceforge.net/projects/metasploitable/files/latest/download) installation media if it is not already done after extracting the file you can use virt manager user interface to install the machine
+First, you have to [download](https://sourceforge.net/projects/metasploitable/files/latest/download) the operating system if it is not already done. After extracting the file, you can use the Virtual Manager user interface to install the machine.
 
 [![cvm1.png](https://i.postimg.cc/3Jcnbmrs/cvm1.png)](https://postimg.cc/JGjNsykx)
 
 
-* The installation media is still a virtual image 
+* The installation media is a virtual image .
 
 [![import-image-kvm.png](https://i.postimg.cc/kGMqHkKV/import-image-kvm.png)](https://postimg.cc/2btsb9Hm)
 
 
 [![browse444.png](https://i.postimg.cc/pVFnq0y5/browse444.png)](https://postimg.cc/6TB3QfrB)
 
-[![browse-msf.png](https://i.postimg.cc/05cxSHhs/browse-msf.png)](https://postimg.cc/K4kdSQZq)
+[![browse-msf.png](https://i.postimg.cc/76Yts5H9/browse-msf.png)](https://postimg.cc/Z92L0Kyv)
 
-* We define it as a generic Os to go faster 
+
+* If you are done with the operating system selection you can proceed .
 
 [![dvwa-kvm-install.png](https://i.postimg.cc/FF8vGJFW/dvwa-kvm-install.png)](https://postimg.cc/Sj6HxRMC)
 
-* Set the cpu ram
+
+* Setting CPU and RAM according to the host machin specifications .
 
 [![dvwa-cpu-kvm.png](https://i.postimg.cc/C1mhFF8R/dvwa-cpu-kvm.png)](https://postimg.cc/qh6VwHjr)
 
-* finally we give a name to the machin and we include it in our LAN by using the private isolated network as interface 
+
+* Finally, give a name to the machine and include it in the LAN by using the __private__ isolated network as an interface.
 
 [![metasploitable-kvm-install.png](https://i.postimg.cc/q7ZrYmHK/metasploitable-kvm-install.png)](https://postimg.cc/B8DRPB6Z)
 
-* The installation should be ok you can use the default username 'msfadmin' and password 'msfadmin' to login
+
+* The installation should be ok. Use the default username 'msfadmin' and password 'msfadmin' to log in.
 
 [![msf-login.png](https://i.postimg.cc/Dzbg1Z6X/msf-login.png)](https://postimg.cc/sBs7r3tj)
 
-* Now with use `sudo vim /etc/network/interfaces` to set the network interface , in vim you have to enter insert mode with __i__ to save and quit you use __Esc__ than __:qw__ , edit the file as follow 
+
+* Use `sudo vim /etc/network/interfaces` to set a static ip for the Metasploitatble2 machine. In vim, you have to enter insert mode with __i__ to edit ; to save and quit, you use __Esc__; then __:qw__, make the following change into the file :
 
 [![debian-static-net-setting.png](https://i.postimg.cc/jS6Q007J/debian-static-net-setting.png)](https://postimg.cc/v4B6fKXQ)
 
-* To apply the change you use `sudo /etc/inid.d/networking restart`
+
+* Apply the change with `sudo /etc/inid.d/networking restart`
 
 [![debian-restart-networking.png](https://i.postimg.cc/j2zQsGF9/debian-restart-networking.png)](https://postimg.cc/GTmsKSrJ)
 
-* We verify the setting by doing nslookup and making sure that the vyos address `192.168.152.10` is present in the output 
+* Verify the setting by doing nslookup and making sure that the vyos address `192.168.152.10` is present in the output 
 
 [![nslookup.png](https://i.postimg.cc/wxcmjcBS/nslookup.png)](https://postimg.cc/hhvjCmTr)
 
 
+
 ## Conclusion 
+
+If you followed all the steps, you should have up to five operating systems on your machine, counting your guests.
+
+[![final-setup.png](https://i.postimg.cc/VkpypBr6/final-setup.png)](https://postimg.cc/jDHkJfh0)
+
+
+In conclusion, creating a virtual laboratory for penetration testing  is a great way to ensure a safe and efficient environment for carrying out various testing procedures. With KVM, you can easily create and manage virtual machines and provide yourself with a complete isolated environment . 
+
+It is important to note that penetration testing should only be done with the proper authorization and consent of the target organization. Otherwise, it can be considered illegal and unethical. This emphasizes the importance of owning your own laboratory as an ethical hacker to avoid complications with the law.
+
+If you're interested in learning more about cybersecurity and related topics, check out our other articles on this blog. In particular, you may want to read our article on the implementation of a botnet, which can be used for various purposes, including distributed denial-of-service (DDoS) attacks and spam campaigns, the perfect exercice to start experimenting with your virtual laboratory .  Click here to read the article: [simple-botnet](https://0script.netlify.app/simple-botnet/)
+
+Thank you for reading, and we hope this article has been informative and helpful. If you want to propose any improvement or if you notice any mistakes, contact me via <a href="mailto:z5r00script.com">Email</a>.
