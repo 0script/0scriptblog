@@ -371,13 +371,12 @@ Still in configuration mode we set the DHCP and DNS services for the internal/LA
 * VyOS will serve as a full DNS server, replacing the need to utilize Google, Cloudflare, or other public DNS servers (which is good for privacy)
 * Only hosts from your internal/LAN network can use the DNS server
 ```shell
-set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 default-router '192.168.152.10'
-set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 name-server '192.168.152.10'
-set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 domain-name 'vyos.router'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 option default-router '192.168.152.10'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 option name-server '192.168.152.10'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 option domain-name 'vyos.router'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 lease '86400'
 set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 start 192.168.152.50
-set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 stop '192.
-168.152.254'
+set service dhcp-server shared-network-name LAN subnet 192.168.152.0/24 range 0 stop '192.168.152.254'
 
 set service dns forwarding listen-address 192.168.152.10
 set service dns forwarding allow-from 192.168.152.0/24
@@ -412,14 +411,6 @@ The following command will use Cloudfare, Google, and Quad9 as DNS relays.
 set service dns forwarding name-server 1.1.1.1
 set service dns forwarding name-server 8.8.8.8
 set service dns forwarding name-server 9.9.9.9
-```
-
-Set  a DNS server for the system to be used for DNS lookups than commit save and exit .
-```shell
-set system name-server 192.168.152.10
-commit
-save
-exit
 ```
 
 ##### Testing network 
