@@ -411,6 +411,7 @@ The following command will use Cloudfare, Google, and Quad9 as DNS relays.
 set service dns forwarding name-server 1.1.1.1
 set service dns forwarding name-server 8.8.8.8
 set service dns forwarding name-server 9.9.9.9
+set system name-server 1.1.1.1
 ```
 
 ##### Testing network 
