@@ -393,7 +393,7 @@ set service dns forwarding cache-size 10240
 
 The following settings will configure SNAT rules for our internal network(LAN), allowing hosts to communicate through the outside network (WAN) via ip masquerade , after the setting use `commit` than `save` commandes . 
 ```shell
-set nat source rule 100 outbound-interface 'eth0'
+set nat source rule 100 outbound-interface name 'eth0'
 set nat source rule 100 source address '192.168.152.0/24'
 set nat source rule 100 translation address masquerade
 commit
